@@ -1,60 +1,39 @@
 # taigi-converter
 
-Bidirectional converter between Taigi (Taiwanese) phonetic systems: TL (Tai-lo), POJ (Pe-oh-e-ji), and Zhuyin (TPS/Bopomofo).
+台語通用轉換器 — bidirectional converter between Taigi phonetic systems: TL (台語羅馬字), POJ (白話字), TPS (台語注音), and tone number/mark formats.
 
 ## Features
 
-- Convert between TL, POJ, and Zhuyin
+- Convert between TL, POJ, and TPS
 - Tone mark to tone number conversion (and vice versa)
 - Handles mixed text with punctuation and hyphens
 - Preserves letter casing
+- Real-time web interface with all formats displayed simultaneously
 
-## CLI Usage
+## Web
 
-```bash
-# Convert between romanization systems
-taigi-converter convert -s tl -t poj "tshiu-a"
-taigi-converter convert -s poj -t tl "chhiu-a"
+Live at [taigikeyboard.tw](https://taigikeyboard.tw) — type TL or POJ and see all conversions instantly.
 
-# Convert to Zhuyin (TPS)
-taigi-converter convert -s tl -t zhuyin "tshiu7 a2"
+## API
 
-# Tone mark / tone number conversion
-taigi-converter tone-number "Gau-tsa"
-taigi-converter tone-mark "tshiu7-a2"
+```js
+import { convert, toToneNumber, toToneMark } from "./src/converter.js";
 
-# File conversion
-taigi-converter convert -s tl -t poj -i input.txt -o output.txt
+convert("tshiu-a", "tl", "poj");       // "chhiu-a"
+convert("chhiu-a", "poj", "tl");       // "tshiu-a"
+convert("tshiu7 a2", "tl", "zhuyin");  // TPS output
 
-# Legacy mode (Tailo numbered input to Zhuyin file conversion)
-taigi-converter legacy -i input.txt -o output.txt [--safe]
-```
-
-## Library
-
-```python
-from taigi_converter import convert, to_tone_number, to_tone_mark
-
-# Convert between systems
-convert("tshiu-a", "tl", "poj")    # "chhiu-a"
-convert("chhiu-a", "poj", "tl")    # "tshiu-a"
-convert("tshiu7 a2", "tl", "zhuyin")  # Zhuyin output
-
-# Tone conversion
-to_tone_number("Gau-tsa")   # "Gau5-tsa2"
-to_tone_mark("tshiu7-a2")      # "tshiu-a"
-to_tone_mark("tshiu7-a2", system="poj")  # "chhiu-a"
-
-# Legacy API (backward compatible)
-from taigi_converter import TailoTpsConverter
-converter = TailoTpsConverter()
-converter.convert("tiau1 su5 pek8 te7")
+toToneNumber("Gau-tsa");               // "Gau5-tsa2"
+toToneMark("tshiu7-a2");               // "tshiu-a"
+toToneMark("tshiu7-a2", "poj");        // "chhiu-a"
 ```
 
 ## Development
 
+- **Runtime**: Node.js 22+
+- **Test framework**: `node:test` (built-in)
+- No external dependencies
+
 ```bash
-uv run pytest              # run tests
-uv run ruff check src/ tests/   # lint
-uv run ruff format src/ tests/  # format
+node --test tests/
 ```
