@@ -1,0 +1,29 @@
+[project]
+name = "taigi-converter"
+version = "0.1.0"
+description = "Tailo to TPS (Taiwan Phonetic Symbol) converter"
+readme = "README.md"
+authors = [
+    { name = "siansiansu", email = "minsiansu@gmail.com" }
+]
+requires-python = ">=3.13"
+dependencies = []
+
+[project.scripts]
+taigi-converter = "taigi_converter.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.10.2,<0.11.0"]
+build-backend = "uv_build"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.2",
+    "ruff>=0.15.0",
+]
