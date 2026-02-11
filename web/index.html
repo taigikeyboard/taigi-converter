@@ -114,10 +114,41 @@
       user-select: all;
       -webkit-user-select: all;
       min-height: 1.5em;
+      cursor: pointer;
+      border-radius: 6px;
+      padding: 0.125rem 0.375rem;
+      margin: -0.125rem -0.375rem;
+      transition: background 0.15s;
+      position: relative;
+    }
+
+    .result-value:not(.placeholder):hover {
+      background: #f5f5f7;
+    }
+
+    .result-value:not(.placeholder):active {
+      background: #e8e8ed;
+    }
+
+    .result-value.copied::after {
+      content: "Copied";
+      position: absolute;
+      right: 0.375rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 13px;
+      color: #86868b;
+      animation: fade-out 1s ease forwards;
+    }
+
+    @keyframes fade-out {
+      0%, 60% { opacity: 1; }
+      100% { opacity: 0; }
     }
 
     .result-value.placeholder {
       color: #c5c5c7;
+      cursor: default;
     }
 
     footer {
@@ -221,7 +252,7 @@
       try { tlNum = toToneNumber(tlMarks); } catch { }
 
       let pojNum = "";
-      try { pojNum = toToneNumber(pojMarks); } catch { }
+      try { pojNum = toToneNumber(pojMarks).replace(/\u207f/g, "nn").replace(/o\u0358/g, "oo"); } catch { }
 
       let tps = "";
       try { tps = convert(tlMarks, "tl", "zhuyin"); } catch { }
@@ -234,6 +265,16 @@
     }
 
     inputEl.addEventListener("input", update);
+
+    document.querySelector(".results").addEventListener("click", (e) => {
+      const el = e.target.closest(".result-value");
+      if (!el || el.classList.contains("placeholder")) return;
+      navigator.clipboard.writeText(el.textContent);
+      el.classList.remove("copied");
+      void el.offsetWidth;
+      el.classList.add("copied");
+      setTimeout(() => el.classList.remove("copied"), 1000);
+    });
   </script>
 </body>
 
