@@ -8,35 +8,34 @@
 
 ## Project Structure
 
-- `src/taigi_converter/` - main package
-  - `tables.py` - all mapping data (initials, finals, tones, TL/POJ/Zhuyin maps)
-  - `phonetics.py` - syllable parsing (`parse_syllable`, `strip_tone_mark`, `is_stop_tone`)
-  - `tl.py` - TL (Tai-lo) assembly with tone mark placement
-  - `poj.py` - POJ (Pe-oh-e-ji) assembly with tone mark placement
-  - `zhuyin.py` - Zhuyin/TPS conversion (tone-numbered TL input)
-  - `converter.py` - public API (`convert`, `to_tone_number`, `to_tone_mark`, `TailoTpsConverter`)
-  - `cli.py` - CLI entry point (`taigi-converter` command)
-- `tests/` - pytest test suite
+- `src/` - ES module source
+  - `tables.js` - all mapping data (initials, finals, tones, TL/POJ/Zhuyin maps)
+  - `phonetics.js` - syllable parsing (`parseSyllable`, `stripToneMark`, `isStopTone`)
+  - `tl.js` - TL (Tai-lo) assembly with tone mark placement
+  - `poj.js` - POJ (Pe-oh-e-ji) assembly with tone mark placement
+  - `zhuyin.js` - Zhuyin/TPS conversion (tone-numbered TL input)
+  - `converter.js` - public API (`convert`, `toToneNumber`, `toToneMark`)
+  - `index.js` - re-exports public API
+- `tests/` - test suite (Node.js built-in test runner)
+- `web/index.html` - single-page web interface
 - `references/` - original reference implementations (gitignored)
 
 ## Development
 
-- **Python**: 3.13+
-- **Package manager**: uv
-- **Test framework**: pytest
-- **Linter/formatter**: ruff
+- **Runtime**: Node.js 22+
+- **Test framework**: `node:test` (built-in)
+- No external dependencies
 
 ## Commands
 
-- `uv run pytest` - run tests
-- `uv run ruff check src/ tests/` - lint
-- `uv run ruff format src/ tests/` - format
-- `uv run taigi-converter convert -s tl -t poj "tshiu7-a2"` - convert TL to POJ
-- `uv run taigi-converter convert -s poj -t tl "chhiu7-a2"` - convert POJ to TL
-- `uv run taigi-converter convert -s tl -t zhuyin "tshiu7 a2"` - convert TL to Zhuyin
-- `uv run taigi-converter tone-number "Gau5-tsa2"` - tone marks to numbers
-- `uv run taigi-converter tone-mark "tshiu7-a2"` - tone numbers to marks
-- `uv run taigi-converter legacy -i input.txt -o output.txt` - legacy file conversion
+- `node --test tests/` - run tests
+- `npx serve docs/` or `python3 -m http.server -d web 8000` - local web testing
+
+## Web Interface
+
+- `web/index.html` - Single-page app importing from `../src/converter.js`
+- Deployed to GitHub Pages via `.github/workflows/deploy.yml`
+- No build step required - pure HTML/CSS/JS with ES modules
 
 ## Conventions
 
