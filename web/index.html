@@ -203,6 +203,7 @@
 
   <script type="module">
     import { convert, toToneNumber, toToneMark } from "./src/converter.js";
+    import { isZhuyin, fromZhuyin } from "./src/zhuyin.js";
 
     const inputEl = document.getElementById("input");
     const rows = {
@@ -240,7 +241,9 @@
       }
 
       let numbered = "";
-      try { numbered = toToneNumber(text); } catch { }
+      try {
+        numbered = isZhuyin(text) ? fromZhuyin(text) : toToneNumber(text);
+      } catch { }
 
       let tlMarks = "";
       try { tlMarks = toToneMark(numbered, "tl"); } catch { }

@@ -97,7 +97,8 @@ describe("convert API", () => {
   it("same system passthrough", () => strictEqual(convert("hello", "tl", "tl"), "hello"));
   it("unknown source", () => throws(() => convert("hello", "xyz", "tl"), /Unknown source/));
   it("unknown target", () => throws(() => convert("hello", "tl", "xyz"), /Unknown target/));
-  it("zhuyin source not supported", () => throws(() => convert("\u310d\u311a", "zhuyin", "tl"), /not yet supported/));
+  it("zhuyin to tl", () => ok(convert("\u310d\u311a\u02cb", "zhuyin", "tl").includes("k\u00e1")));
+  it("zhuyin to poj", () => ok(convert("\u3111\u3127\u3128\u02eb", "zhuyin", "poj").includes("chh")));
   it("tl to poj ing to eng", () => ok(convert("p\u00eeng", "tl", "poj").includes("\u00eang")));
   it("preserves non syllable text", () => ok(convert("hello-world", "tl", "poj").includes("-")));
   it("preserves case title", () => ok(convert("T\u00e2i-g\u00ed", "tl", "poj")[0] === "T"));

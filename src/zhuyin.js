@@ -3,6 +3,118 @@ import {
   ZHUYIN_INITIALS, ZHUYIN_VOWELS, ZHUYIN_TONES, ZHUYIN_TONES_ENCODE_SAFE
 } from "./tables.js";
 
+function buildReverse(pairs) {
+  const rev = pairs.map(([tl, tps]) => [tps, tl]);
+  rev.sort((a, b) => b[0].length - a[0].length);
+  return rev;
+}
+
+function buildReverseTones() {
+  const map = new Map();
+  for (const table of [ZHUYIN_TONES, ZHUYIN_TONES_ENCODE_SAFE]) {
+    for (const [tl, tps] of table) {
+      if (!map.has(tps)) map.set(tps, tl);
+    }
+  }
+  const entries = [...map.entries()];
+  entries.sort((a, b) => b[0].length - a[0].length);
+  return entries;
+}
+
+const REV_INITIALS = buildReverse(ZHUYIN_INITIALS);
+const REV_VOWELS = buildReverse(ZHUYIN_VOWELS);
+const REV_TONES = buildReverseTones();
+
+const REV_PUNCT = [
+  ["\u3002", "."], ["\u300c", '"'], ["\u300d", '"'],
+  ["\uff0c", ","], ["\uff1f", "?"], ["\uff0e", "\u00b7"]
+];
+
+const ZHUYIN_RE = /[\u3100-\u312F\u31A0-\u31BF]/;
+
+export function isZhuyin(text) {
+  return ZHUYIN_RE.test(text);
+}
+
+export function fromZhuyin(text) {
+  let input = text;
+  for (const [tps, ascii] of REV_PUNCT) {
+    input = input.replaceAll(tps, ascii);
+  }
+
+  let remaining = input;
+  const parts = [];
+  let initial = "";
+  let vowel = "";
+
+  while (remaining.length > 0) {
+    let matched = false;
+
+    for (const [tps, tl] of REV_TONES) {
+      if (remaining.startsWith(tps)) {
+        remaining = remaining.slice(tps.length);
+        if (initial || vowel) {
+          let syl = initial + vowel;
+          if (initial === "m" && vowel === "m") syl = "m";
+          parts.push({ type: "syllable", value: syl + tl });
+        }
+        initial = "";
+        vowel = "";
+        matched = true;
+        break;
+      }
+    }
+    if (matched) continue;
+
+    if (initial === "" && vowel === "") {
+      for (const [tps, tl] of REV_INITIALS) {
+        if (remaining.startsWith(tps)) {
+          initial = tl;
+          remaining = remaining.slice(tps.length);
+          matched = true;
+          break;
+        }
+      }
+      if (matched) continue;
+    }
+
+    for (const [tps, tl] of REV_VOWELS) {
+      if (remaining.startsWith(tps)) {
+        vowel += tl;
+        remaining = remaining.slice(tps.length);
+        matched = true;
+        break;
+      }
+    }
+    if (matched) continue;
+
+    if (initial || vowel) {
+      let syl = initial + vowel;
+      if (initial === "m" && vowel === "m") syl = "m";
+      parts.push({ type: "syllable", value: syl });
+      initial = "";
+      vowel = "";
+    }
+    parts.push({ type: "other", value: remaining[0] });
+    remaining = remaining.slice(1);
+  }
+
+  if (initial || vowel) {
+    let syl = initial + vowel;
+    if (initial === "m" && vowel === "m") syl = "m";
+    parts.push({ type: "syllable", value: syl });
+  }
+
+  let result = "";
+  for (let i = 0; i < parts.length; i++) {
+    if (i > 0 && parts[i].type === "syllable" && parts[i - 1].type === "syllable") {
+      result += "-";
+    }
+    result += parts[i].value;
+  }
+  return result;
+}
+
 export function toZhuyin(text, { encodeSafe = false } = {}) {
   let remaining = text;
   let prePunctuation = "";

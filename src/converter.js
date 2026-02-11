@@ -1,7 +1,7 @@
 import { isStopTone, normalizeToTl, parseSyllable, splitInitialFinal, stripToneMark } from "./phonetics.js";
 import { toTl } from "./tl.js";
 import { toPoj } from "./poj.js";
-import { toZhuyin } from "./zhuyin.js";
+import { fromZhuyin, toZhuyin } from "./zhuyin.js";
 
 const SYSTEMS = new Set(["tl", "poj", "zhuyin"]);
 
@@ -16,7 +16,10 @@ export function convert(text, source, target) {
   if (!SYSTEMS.has(source)) throw new Error(`Unknown source system: ${source}`);
   if (!SYSTEMS.has(target)) throw new Error(`Unknown target system: ${target}`);
   if (source === target) return text;
-  if (source === "zhuyin") throw new Error("Zhuyin as source is not yet supported");
+  if (source === "zhuyin") {
+    const numbered = fromZhuyin(text);
+    return toToneMark(numbered, target);
+  }
 
   if (target === "zhuyin") {
     const numbered = toToneNumber(text);
