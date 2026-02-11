@@ -25,6 +25,7 @@ jobs:
           mkdir -p docs/src
           cp web/index.html docs/
           cp src/*.js docs/src/
+          cp jf-openhuninn-2.1.ttf docs/
       - uses: actions/upload-pages-artifact@v4
         with:
           path: docs
