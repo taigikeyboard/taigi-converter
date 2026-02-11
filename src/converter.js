@@ -24,9 +24,17 @@ export function convert(text, source, target) {
   if (target === "zhuyin") {
     const numbered = toToneNumber(text);
     return numbered.split("\n").map(line => {
-      return line.split(" ").map(word => {
-        return word.split("-").map(t => toZhuyin(t)).join("");
-      }).join("");
+      const parts = [];
+      line.split(" ").forEach(word => {
+        word.split("-").forEach(t => {
+          if (!t) return;
+          const tps = toZhuyin(t).trimEnd();
+          tps.split(/([。，？．「」]+)/).forEach(s => {
+            if (s) parts.push(s);
+          });
+        });
+      });
+      return parts.join(" ");
     }).join("\n");
   }
 

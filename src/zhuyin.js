@@ -116,7 +116,7 @@ export function fromZhuyin(text) {
 }
 
 export function toZhuyin(text, { encodeSafe = false } = {}) {
-  let remaining = text;
+  let remaining = text.toLowerCase();
   let prePunctuation = "";
   let consonant = "";
   let vowel = "";
@@ -165,7 +165,8 @@ export function toZhuyin(text, { encodeSafe = false } = {}) {
     }
   }
 
-  if (vowel === "" && consonant === "\u3107") vowel = "\u31ac";
+  if (vowel === "" && consonant === "\u3107") { vowel = "\u31ac"; consonant = ""; }
+  if (vowel === "" && consonant === "\u312b") { vowel = "\u31ad"; consonant = ""; }
   if (vowel === "\u3125" && consonant === "") vowel = "\u31ad";
 
   let result = prePunctuation + consonant + vowel + hongimTone + remaining;

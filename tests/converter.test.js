@@ -54,8 +54,8 @@ describe("TailoTpsConverter special cases", () => {
     line.split(" ").map(t => toZhuyin(t)).join("")
   ).join("\n");
 
-  it("standalone m", () => strictEqual(cv("m1"), "\u3107\u31ac "));
-  it("standalone ng", () => strictEqual(cv("ng1"), "\u312b "));
+  it("standalone m", () => strictEqual(cv("m1"), "\u31ac "));
+  it("standalone ng", () => strictEqual(cv("ng1"), "\u31ad "));
   it("ng with consonant", () => strictEqual(cv("kang1"), "\u310d\u3124 "));
 });
 
@@ -99,6 +99,15 @@ describe("convert API", () => {
   it("unknown target", () => throws(() => convert("hello", "tl", "xyz"), /Unknown target/));
   it("zhuyin to tl", () => ok(convert("\u310d\u311a\u02cb", "zhuyin", "tl").includes("k\u00e1")));
   it("zhuyin to poj", () => ok(convert("\u3111\u3127\u3128\u02eb", "zhuyin", "poj").includes("chh")));
+  it("tl to zhuyin uppercase", () => ok(convert("L\u0101u-b\u00fa", "tl", "zhuyin").includes("\u310c\u3120\u02eb")));
+  it("tl to zhuyin space separated", () => {
+    const result = convert("tshiu7 a2", "tl", "zhuyin");
+    strictEqual(result, "\u3111\u3127\u3128\u02eb \u311a\u02cb");
+  });
+  it("tl to zhuyin punct separated", () => {
+    const result = convert("s\u00ed, g\u00edn", "tl", "zhuyin");
+    strictEqual(result, "\u3112\u3127\u02cb \uff0c \u30a3\u3127\u3123\u02cb".replace("\u30a3", "\u31a3"));
+  });
   it("tl to poj ing to eng", () => ok(convert("p\u00eeng", "tl", "poj").includes("\u00eang")));
   it("preserves non syllable text", () => ok(convert("hello-world", "tl", "poj").includes("-")));
   it("preserves case title", () => ok(convert("T\u00e2i-g\u00ed", "tl", "poj")[0] === "T"));
