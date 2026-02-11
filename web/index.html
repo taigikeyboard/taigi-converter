@@ -275,6 +275,7 @@
     }
 
     inputEl.addEventListener("input", update);
+    inputEl.focus();
 
     document.querySelector(".results").addEventListener("click", (e) => {
       const el = e.target.closest(".result-value");
