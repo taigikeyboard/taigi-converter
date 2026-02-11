@@ -25,7 +25,7 @@ jobs:
           mkdir -p docs/src
           cp web/index.html docs/
           cp src/*.js docs/src/
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v4
         with:
           path: docs
       - id: deployment
