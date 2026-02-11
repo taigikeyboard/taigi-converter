@@ -142,8 +142,15 @@
     }
 
     @keyframes fade-out {
-      0%, 60% { opacity: 1; }
-      100% { opacity: 0; }
+
+      0%,
+      60% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0;
+      }
     }
 
     .result-value.placeholder {
@@ -177,7 +184,7 @@
     <textarea id="input" placeholder="Enter any word"></textarea>
     <div class="results">
       <div class="result-row">
-        <div class="result-label">教育部羅馬字</div>
+        <div class="result-label">台羅</div>
         <div class="result-value placeholder" id="out-tl">TL with tone marks</div>
       </div>
       <div class="result-row">
