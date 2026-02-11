@@ -21,7 +21,9 @@ export function convert(text, source, target) {
   if (target === "zhuyin") {
     const numbered = toToneNumber(text);
     return numbered.split("\n").map(line => {
-      return line.split(" ").map(t => toZhuyin(t)).join("");
+      return line.split(" ").map(word => {
+        return word.split("-").map(t => toZhuyin(t)).join("");
+      }).join("");
     }).join("\n");
   }
 
