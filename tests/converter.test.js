@@ -108,6 +108,38 @@ describe("convert API", () => {
     const result = convert("s\u00ed, g\u00edn", "tl", "zhuyin");
     strictEqual(result, "\u3112\u3127\u02cb \uff0c \u30a3\u3127\u3123\u02cb".replace("\u30a3", "\u31a3"));
   });
+  it("Han-ts\u00ee m\u0304-kiann lo\u030dh-th\u00f3o nu\u0101", () => {
+    strictEqual(convert("Han-ts\u00ee m\u0304-kiann lo\u030dh-th\u00f3o nu\u0101", "tl", "zhuyin"),
+      "\u310f\u3122 \u3110\u3127\u02ca \u31ac\u02eb \u310d\u3127\u31a9 \u310c\u311b\u31b7\u0307 \u310a\u31a6\u02cb \u310b\u3128\u311a\u02eb");
+  });
+  it("Tai5-uan5 Tai5-gi2 Lo5-ma2-ji7", () => {
+    strictEqual(convert("Tai5-uan5 Tai5-gi2 Lo5-ma2-ji7", "tl", "zhuyin"),
+      "\u3109\u311e\u02ca \u3128\u3122\u02ca \u3109\u311e\u02ca \u31a3\u3127\u02cb \u310c\u311b\u02ca \u3107\u311a\u02cb \u31a2\u3127\u02eb");
+  });
+  it("Oo kan-\u00e1 t\u00e9 t\u0101u-i\u00fb", () => {
+    strictEqual(convert("Oo kan-\u00e1 t\u00e9 t\u0101u-i\u00fb", "tl", "zhuyin"),
+      "\u31a6 \u310d\u3122 \u311a\u02cb \u3109\u31a4\u02cb \u3109\u3120\u02eb \u3127\u3128\u02ca");
+  });
+  it("Thinn-kong thi\u00e0nn g\u014dng-l\u00e2ng", () => {
+    strictEqual(convert("Thinn-kong thi\u00e0nn g\u014dng-l\u00e2ng", "tl", "zhuyin"),
+      "\u310a\u31aa \u310d\u31b2 \u310a\u3127\u31a9\u02ea \u31a3\u31b2\u02eb \u310c\u3124\u02ca");
+  });
+  it("Tsia\u030dh h\u00f3 t\u00e0u sio-p\u00f2", () => {
+    strictEqual(convert("Tsia\u030dh h\u00f3 t\u00e0u sio-p\u00f2", "tl", "zhuyin"),
+      "\u3110\u3127\u311a\u31b7\u0307 \u310f\u311b\u02cb \u3109\u3120\u02ea \u3112\u3127\u311b \u3105\u311b\u02ea");
+  });
+  it("Ts\u00fbn ku\u00e8 tsu\u00ed b\u00f4 h\u00fbn", () => {
+    strictEqual(convert("Ts\u00fbn ku\u00e8 tsu\u00ed b\u00f4 h\u00fbn", "tl", "zhuyin"),
+      "\u3117\u3128\u3123\u02ca \u310d\u3128\u31a4\u02ea \u3117\u3128\u3127\u02cb \u31a0\u311b\u02ca \u310f\u3128\u3123\u02ca");
+  });
+  it("\u016a tshu\u00ec k\u00f3ng kah b\u00f4 nu\u0101", () => {
+    strictEqual(convert("\u016a tshu\u00ec k\u00f3ng kah b\u00f4 nu\u0101", "tl", "zhuyin"),
+      "\u3128\u02eb \u3118\u3128\u3127\u02ea \u310d\u31b2\u02cb \u310d\u311a\u31b7 \u31a0\u311b\u02ca \u310b\u3128\u311a\u02eb");
+  });
+  it("Tsi\u030dt ki tsh\u00e1u, tsi\u030dt ti\u00e1m l\u014do", () => {
+    strictEqual(convert("Tsi\u030dt ki tsh\u00e1u, tsi\u030dt ti\u00e1m l\u014do", "tl", "zhuyin"),
+      "\u3110\u3127\u31b5\u0307 \u310d\u3127 \u3118\u3120\u02cb \uff0c \u3110\u3127\u31b5\u0307 \u3109\u3127\u31b0\u02cb \u310c\u31a6\u02eb");
+  });
   it("tl to poj ing to eng", () => ok(convert("p\u00eeng", "tl", "poj").includes("\u00eang")));
   it("preserves non syllable text", () => ok(convert("hello-world", "tl", "poj").includes("-")));
   it("preserves case title", () => ok(convert("T\u00e2i-g\u00ed", "tl", "poj")[0] === "T"));
