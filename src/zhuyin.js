@@ -60,7 +60,7 @@ export function fromZhuyin(text) {
         if (initial || vowel) {
           let syl = initial + vowel;
           if (initial === "m" && vowel === "m") syl = "m";
-          if (syl.includes("oo") && /^[ptkh][48]$/.test(tl)) syl = syl.replace("oo", "o");
+          if (syl.includes("oo") && /^[ptk][48]$/.test(tl)) syl = syl.replace("oo", "o");
           parts.push({ type: "syllable", value: syl + tl });
         }
         initial = "";
@@ -180,7 +180,7 @@ export function toZhuyin(text, { encodeSafe = false } = {}) {
     consonant = consonant.slice(0, -1);
     vowel = "\u31aa";
   }
-  if (vowel.includes("\u311b") && hongimTone.length > 0 && "\u31b4\u31b5\u31bb\u31b7".includes(hongimTone[0])) {
+  if (vowel.includes("\u311b") && hongimTone.length > 0 && "\u31b4\u31b5\u31bb".includes(hongimTone[0])) {
     vowel = vowel.replaceAll("\u311b", "\u31a6");
   }
 

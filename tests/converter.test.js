@@ -110,7 +110,7 @@ describe("convert API", () => {
   });
   it("Han-ts\u00ee m\u0304-kiann lo\u030dh-th\u00f3o nu\u0101", () => {
     strictEqual(convert("Han-ts\u00ee m\u0304-kiann lo\u030dh-th\u00f3o nu\u0101", "tl", "zhuyin"),
-      "\u310f\u3122 \u3110\u3127\u02ca \u31ac\u02eb \u310d\u3127\u31a9 \u310c\u31a6\u31b7\u0307 \u310a\u31a6\u02cb \u310b\u3128\u311a\u02eb");
+      "\u310f\u3122 \u3110\u3127\u02ca \u31ac\u02eb \u310d\u3127\u31a9 \u310c\u311b\u31b7\u0307 \u310a\u31a6\u02cb \u310b\u3128\u311a\u02eb");
   });
   it("Tai5-uan5 Tai5-gi2 Lo5-ma2-ji7", () => {
     strictEqual(convert("Tai5-uan5 Tai5-gi2 Lo5-ma2-ji7", "tl", "zhuyin"),
