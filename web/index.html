@@ -299,8 +299,8 @@
       const tlTrad = toTrad(tlMarks);
 
       const toYongjing = (s) => s.normalize("NFD")
-        .replace(/(?<![aeuoAEUO][\u0300-\u036f]?)i([\u0300-\u036f]?)n/gi,
-          (m, mark) => (m[0] === "I" ? "E" : "e") + mark + "n")
+        .replace(/(?<![aeuoAEUO][\u0300-\u036f]?)i([\u0300-\u036f]?)([nk])/gi,
+          (m, mark, c) => (m[0] === "I" ? "E" : "e") + mark + c)
         .normalize("NFC");
       const yjMarks = toYongjing(tlMarks);
       const yjTrad = toTrad(yjMarks);
