@@ -200,18 +200,6 @@
         <div class="result-value placeholder" id="out-tl-num">見本: lak8-gueh8-tang1</div>
       </div>
       <div class="result-row">
-        <div class="result-label">台羅正式版 (永靖腔)</div>
-        <div class="result-value placeholder" id="out-tl-yj">見本: la̍k-gue̍h-tang</div>
-      </div>
-      <div class="result-row">
-        <div class="result-label">台羅傳統版 (永靖腔)</div>
-        <div class="result-value placeholder" id="out-tl-trad-yj">見本: la̍k-gue̍h-tang</div>
-      </div>
-      <div class="result-row">
-        <div class="result-label">台羅聲調數字 (永靖腔)</div>
-        <div class="result-value placeholder" id="out-tl-num-yj">見本: lak8-gueh8-tang1</div>
-      </div>
-      <div class="result-row">
         <div class="result-label">白話字</div>
         <div class="result-value placeholder" id="out-poj">見本: la̍k-goe̍h-tang</div>
       </div>
@@ -222,6 +210,18 @@
       <div class="result-row">
         <div class="result-label">台語注音</div>
         <div class="result-value placeholder" id="out-tps">見本: ㄌㄚㆻ̇ ㆣㄨㆤㆷ̇ ㄉㄤ</div>
+      </div>
+      <div class="result-row">
+        <div class="result-label">台羅正式版 (永靖腔)</div>
+        <div class="result-value placeholder" id="out-tl-yj">見本: la̍k-gue̍h-tang</div>
+      </div>
+      <div class="result-row">
+        <div class="result-label">台羅傳統版 (永靖腔)</div>
+        <div class="result-value placeholder" id="out-tl-trad-yj">見本: la̍k-gue̍h-tang</div>
+      </div>
+      <div class="result-row">
+        <div class="result-label">台羅聲調數字 (永靖腔)</div>
+        <div class="result-value placeholder" id="out-tl-num-yj">見本: lak8-gueh8-tang1</div>
       </div>
     </div>
   </div>
@@ -298,11 +298,13 @@
       const toTrad = (s) => s.replace(/nn/g, "\u207f").replace(/oo/g, "o\u00b7");
       const tlTrad = toTrad(tlMarks);
 
-      const toYongjing = (s) => s.replace(/(?<![aeuoAEUO])in/gi, (m) => (m[0] === "I" ? "E" : "e") + m[1]);
-      const yjNum = toYongjing(tlNum);
-      let yjMarks = "";
-      try { yjMarks = toToneMark(yjNum, "tl"); } catch { }
+      const toYongjing = (s) => s.normalize("NFD")
+        .replace(/(?<![aeuoAEUO][\u0300-\u036f]?)i([\u0300-\u036f]?)n/gi,
+          (m, mark) => (m[0] === "I" ? "E" : "e") + mark + "n")
+        .normalize("NFC");
+      const yjMarks = toYongjing(tlMarks);
       const yjTrad = toTrad(yjMarks);
+      const yjNum = toYongjing(tlNum);
 
       setResult("tl", tlMarks);
       setResult("tlTrad", tlTrad);
