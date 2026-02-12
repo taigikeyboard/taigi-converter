@@ -180,7 +180,7 @@ export function toZhuyin(text, { encodeSafe = false } = {}) {
     consonant = consonant.slice(0, -1);
     vowel = "\u31aa";
   }
-  if (vowel.includes("\u311b") && hongimTone.length > 0 && hongimTone.charCodeAt(0) >= 0x31b4 && hongimTone.charCodeAt(0) <= 0x31b7) {
+  if (vowel.includes("\u311b") && hongimTone.length > 0 && "\u31b4\u31b5\u31bb\u31b7".includes(hongimTone[0])) {
     vowel = vowel.replaceAll("\u311b", "\u31a6");
   }
 

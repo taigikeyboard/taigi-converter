@@ -38,7 +38,7 @@ describe("TailoTpsConverter tones", () => {
   it("tone 7", () => strictEqual(cv("ka7"), "\u310d\u311a\u02eb"));
   it("tone p4", () => strictEqual(cv("kap4"), "\u310d\u311a\u31b4"));
   it("tone t4", () => strictEqual(cv("kat4"), "\u310d\u311a\u31b5"));
-  it("tone k4", () => strictEqual(cv("kak4"), "\u310d\u311a\u31b6"));
+  it("tone k4", () => strictEqual(cv("kak4"), "\u310d\u311a\u31bb"));
   it("tone h4", () => strictEqual(cv("kah4"), "\u310d\u311a\u31b7"));
   it("tone p8 standard", () => strictEqual(cv("kap8"), "\u310d\u311a\u31b4\u0307"));
   it("tone p8 encode safe", () => {
@@ -74,11 +74,11 @@ describe("TailoTpsConverter multi syllable", () => {
     line.split(" ").map(t => toZhuyin(t)).join("")
   ).join("\n");
 
-  it("two syllables", () => strictEqual(cv("su5 pek8"), "\u3119\u3128\u02ca\u3105\u31a4\u31b6\u0307"));
+  it("two syllables", () => strictEqual(cv("su5 pek8"), "\u3119\u3128\u02ca\u3105\u31a4\u31bb\u0307"));
   it("reference example", () => {
     const text = "tiau1 su5 pek8 te7 tshai2 un5 kan1,";
     const result = cv(text);
-    strictEqual(result, "\u3109\u3127\u3120 \u3119\u3128\u02ca\u3105\u31a4\u31b6\u0307\u3109\u31a4\u02eb\u3118\u311e\u02cb\u3128\u3123\u02ca\u310d\u3122 \uff0c");
+    strictEqual(result, "\u3109\u3127\u3120 \u3119\u3128\u02ca\u3105\u31a4\u31bb\u0307\u3109\u31a4\u02eb\u3118\u311e\u02cb\u3128\u3123\u02ca\u310d\u3122 \uff0c");
   });
 });
 
@@ -151,7 +151,7 @@ describe("convert API", () => {
   it("\u7dbf m\u00ee", () => strictEqual(convert("m\u00ee", "tl", "zhuyin"), "\u3107\u3127\u02ca"));
   it("\u9e35 m\u012b", () => strictEqual(convert("m\u012b", "tl", "zhuyin"), "\u3107\u3127\u02eb"));
   it("\u6587 b\u00fbn", () => strictEqual(convert("b\u00fbn", "tl", "zhuyin"), "\u31a0\u3128\u3123\u02ca"));
-  it("\u6728 ba\u030dk", () => strictEqual(convert("ba\u030dk", "tl", "zhuyin"), "\u31a0\u311a\u31b6\u0307"));
+  it("\u6728 ba\u030dk", () => strictEqual(convert("ba\u030dk", "tl", "zhuyin"), "\u31a0\u311a\u31bb\u0307"));
   it("\u5927 tu\u0101", () => strictEqual(convert("tu\u0101", "tl", "zhuyin"), "\u3109\u3128\u311a\u02eb"));
   it("\u809a t\u014do", () => strictEqual(convert("t\u014do", "tl", "zhuyin"), "\u3109\u31a6\u02eb"));
   it("\u900f th\u00e0u", () => strictEqual(convert("th\u00e0u", "tl", "zhuyin"), "\u310a\u3120\u02ea"));
@@ -190,8 +190,8 @@ describe("convert API", () => {
   it("\u8a2d siat", () => strictEqual(convert("siat", "tl", "zhuyin"), "\u3112\u3127\u311a\u31b5"));
   it("\u555e \u00e9", () => strictEqual(convert("\u00e9", "tl", "zhuyin"), "\u31a4\u02cb"));
   it("\u6905 \u00ed", () => strictEqual(convert("\u00ed", "tl", "zhuyin"), "\u3127\u02cb"));
-  it("\u8272 sik", () => strictEqual(convert("sik", "tl", "zhuyin"), "\u3112\u3127\u31b6"));
-  it("\u798f hok", () => strictEqual(convert("hok", "tl", "zhuyin"), "\u310f\u31a6\u31b6"));
+  it("\u8272 sik", () => strictEqual(convert("sik", "tl", "zhuyin"), "\u3112\u3127\u31bb"));
+  it("\u798f hok", () => strictEqual(convert("hok", "tl", "zhuyin"), "\u310f\u31a6\u31bb"));
   it("\u597d h\u00f3", () => strictEqual(convert("h\u00f3", "tl", "zhuyin"), "\u310f\u311b\u02cb"));
   it("\u5bf6 p\u00f3", () => strictEqual(convert("p\u00f3", "tl", "zhuyin"), "\u3105\u311b\u02cb"));
   it("\u6b66 b\u00fa", () => strictEqual(convert("b\u00fa", "tl", "zhuyin"), "\u31a0\u3128\u02cb"));
