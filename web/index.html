@@ -103,7 +103,7 @@
 
     .result-label {
       flex-shrink: 0;
-      width: 8rem;
+      width: 11rem;
       font-size: 15px;
       font-weight: 400;
       color: #86868b;
@@ -200,6 +200,18 @@
         <div class="result-value placeholder" id="out-tl-num">見本: lak8-gueh8-tang1</div>
       </div>
       <div class="result-row">
+        <div class="result-label">台羅正式版 (永靖腔)</div>
+        <div class="result-value placeholder" id="out-tl-yj">見本: la̍k-gue̍h-tang</div>
+      </div>
+      <div class="result-row">
+        <div class="result-label">台羅傳統版 (永靖腔)</div>
+        <div class="result-value placeholder" id="out-tl-trad-yj">見本: la̍k-gue̍h-tang</div>
+      </div>
+      <div class="result-row">
+        <div class="result-label">台羅聲調數字 (永靖腔)</div>
+        <div class="result-value placeholder" id="out-tl-num-yj">見本: lak8-gueh8-tang1</div>
+      </div>
+      <div class="result-row">
         <div class="result-label">白話字</div>
         <div class="result-value placeholder" id="out-poj">見本: la̍k-goe̍h-tang</div>
       </div>
@@ -225,6 +237,9 @@
       tl: document.getElementById("out-tl"),
       tlTrad: document.getElementById("out-tl-trad"),
       tlNum: document.getElementById("out-tl-num"),
+      tlYj: document.getElementById("out-tl-yj"),
+      tlTradYj: document.getElementById("out-tl-trad-yj"),
+      tlNumYj: document.getElementById("out-tl-num-yj"),
       poj: document.getElementById("out-poj"),
       pojNum: document.getElementById("out-poj-num"),
       tps: document.getElementById("out-tps"),
@@ -234,6 +249,9 @@
       tl: "見本: la̍k-gue̍h-tang",
       tlTrad: "見本: la̍k-gue̍h-tang",
       tlNum: "見本: lak8-gueh8-tang1",
+      tlYj: "見本: la̍k-gue̍h-tang",
+      tlTradYj: "見本: la̍k-gue̍h-tang",
+      tlNumYj: "見本: lak8-gueh8-tang1",
       poj: "見本: la̍k-goe̍h-tang",
       pojNum: "見本: lak8-goeh8-tang1",
       tps: "見本: ㄌㄚㆻ̇ ㆣㄨㆤㆷ̇ ㄉㄤ",
@@ -277,11 +295,21 @@
       let tps = "";
       try { tps = convert(tlMarks, "tl", "zhuyin"); } catch { }
 
-      const tlTrad = tlMarks.replace(/nn/g, "\u207f").replace(/oo/g, "o\u00b7");
+      const toTrad = (s) => s.replace(/nn/g, "\u207f").replace(/oo/g, "o\u00b7");
+      const tlTrad = toTrad(tlMarks);
+
+      const toYongjing = (s) => s.replace(/(?<![aeuoAEUO])in/gi, (m) => (m[0] === "I" ? "E" : "e") + m[1]);
+      const yjNum = toYongjing(tlNum);
+      let yjMarks = "";
+      try { yjMarks = toToneMark(yjNum, "tl"); } catch { }
+      const yjTrad = toTrad(yjMarks);
 
       setResult("tl", tlMarks);
       setResult("tlTrad", tlTrad);
       setResult("tlNum", tlNum);
+      setResult("tlYj", yjMarks);
+      setResult("tlTradYj", yjTrad);
+      setResult("tlNumYj", yjNum);
       setResult("poj", pojMarks);
       setResult("pojNum", pojNum);
       setResult("tps", tps);
