@@ -86,7 +86,7 @@ export const ZHUYIN_TONES_ENCODE_SAFE = [
   ["p8", "\u31b4\u02d9"], ["t8", "\u31b5\u02d9"], ["k8", "\u31bb\u02d9"], ["h8", "\u31b7\u02d9"]
 ];
 
-export const PUNCTUATION_CHARS = ["\uff0e", "\u300c", "\u300d", "\uff0c", "\u3002", "\uff1f", ",", ".", "?", '"'];
+export const PUNCTUATION_CHARS = ["\uff0e", "\u300c", "\u300d", "\uff0c", "\u3002", "\uff1f", "--", ",", ".", "?", '"'];
 
 export const PUNCTUATION_PAIRS = [
   ["\u3002", ". "], ["\u3002", "."],

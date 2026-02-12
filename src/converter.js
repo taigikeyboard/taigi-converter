@@ -26,9 +26,11 @@ export function convert(text, source, target) {
     return numbered.split("\n").map(line => {
       const parts = [];
       line.split(" ").forEach(word => {
-        word.split("-").forEach(t => {
+        const prefix = word.startsWith("--") ? "--" : "";
+        const bare = prefix ? word.slice(2) : word;
+        bare.split("-").forEach((t, i) => {
           if (!t) return;
-          const tps = toZhuyin(t).trimEnd();
+          const tps = toZhuyin((i === 0 ? prefix : "") + t).trimEnd();
           tps.split(/([。，？．「」]+)/).forEach(s => {
             if (s) parts.push(s);
           });

@@ -237,6 +237,7 @@ describe("convert API", () => {
   it("\u6c38 \u00edng", () => strictEqual(convert("\u00edng", "tl", "zhuyin"), "\u3127\u3125\u02cb"));
   it("\u5175 ping", () => strictEqual(convert("ping", "tl", "zhuyin"), "\u3105\u3127\u3125"));
   it("er\u011b tone 6", () => strictEqual(convert("er\u011b", "tl", "zhuyin"), "\u311c\u31a4\u02c7"));
+  it("--ah neutral tone", () => strictEqual(convert("--ah", "tl", "zhuyin"), "\u00b7\u311a\u31b7"));
   it("tl to poj ing to eng", () => ok(convert("p\u00eeng", "tl", "poj").includes("\u00eang")));
   it("preserves non syllable text", () => ok(convert("hello-world", "tl", "poj").includes("-")));
   it("preserves case title", () => ok(convert("T\u00e2i-g\u00ed", "tl", "poj")[0] === "T"));

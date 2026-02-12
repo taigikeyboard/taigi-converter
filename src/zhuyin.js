@@ -198,5 +198,7 @@ export function toZhuyin(text, { encodeSafe = false } = {}) {
     if (!matched) break;
   }
 
+  result = result.replaceAll("--", "\u00b7");
+
   return result;
 }
