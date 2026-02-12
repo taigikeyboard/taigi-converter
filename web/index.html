@@ -188,16 +188,20 @@
     <textarea id="input" placeholder="Enter any word"></textarea>
     <div class="results">
       <div class="result-row">
-        <div class="result-label">台羅</div>
+        <div class="result-label">台羅正式版</div>
         <div class="result-value placeholder" id="out-tl">見本: la̍k-gue̍h-tang</div>
       </div>
       <div class="result-row">
-        <div class="result-label">白話字</div>
-        <div class="result-value placeholder" id="out-poj">見本: la̍k-goe̍h-tang</div>
+        <div class="result-label">台羅傳統版</div>
+        <div class="result-value placeholder" id="out-tl-trad">見本: la̍k-gue̍h-tang</div>
       </div>
       <div class="result-row">
         <div class="result-label">台羅聲調數字</div>
         <div class="result-value placeholder" id="out-tl-num">見本: lak8-gueh8-tang1</div>
+      </div>
+      <div class="result-row">
+        <div class="result-label">白話字</div>
+        <div class="result-value placeholder" id="out-poj">見本: la̍k-goe̍h-tang</div>
       </div>
       <div class="result-row">
         <div class="result-label">白話字聲調數字</div>
@@ -210,7 +214,7 @@
     </div>
   </div>
 
-  <footer>&copy; 2025 Bîn-hiân · <a href="https://portaly.cc/siansiansu/support">贊助支持 ❤️</a></footer>
+  <footer>&copy; 2026 Bîn-hiân · <a href="https://portaly.cc/siansiansu/support">贊助支持 ❤️</a></footer>
 
   <script type="module">
     import { convert, toToneNumber, toToneMark } from "./src/converter.js";
@@ -219,16 +223,18 @@
     const inputEl = document.getElementById("input");
     const rows = {
       tl: document.getElementById("out-tl"),
-      poj: document.getElementById("out-poj"),
+      tlTrad: document.getElementById("out-tl-trad"),
       tlNum: document.getElementById("out-tl-num"),
+      poj: document.getElementById("out-poj"),
       pojNum: document.getElementById("out-poj-num"),
       tps: document.getElementById("out-tps"),
     };
 
     const placeholders = {
       tl: "見本: la̍k-gue̍h-tang",
-      poj: "見本: la̍k-goe̍h-tang",
+      tlTrad: "見本: la̍k-gue̍h-tang",
       tlNum: "見本: lak8-gueh8-tang1",
+      poj: "見本: la̍k-goe̍h-tang",
       pojNum: "見本: lak8-goeh8-tang1",
       tps: "見本: ㄌㄚㆻ̇ ㆣㄨㆤㆷ̇ ㄉㄤ",
     };
@@ -271,9 +277,12 @@
       let tps = "";
       try { tps = convert(tlMarks, "tl", "zhuyin"); } catch { }
 
+      const tlTrad = tlMarks.replace(/nn/g, "\u207f").replace(/oo/g, "o\u00b7");
+
       setResult("tl", tlMarks);
-      setResult("poj", pojMarks);
+      setResult("tlTrad", tlTrad);
       setResult("tlNum", tlNum);
+      setResult("poj", pojMarks);
       setResult("pojNum", pojNum);
       setResult("tps", tps);
     }
