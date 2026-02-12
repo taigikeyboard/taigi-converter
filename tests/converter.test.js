@@ -198,6 +198,7 @@ describe("convert API", () => {
   it("\u71e8 ut", () => strictEqual(convert("ut", "tl", "zhuyin"), "\u3128\u31b5"));
   it("\u5bb6 kee", () => strictEqual(convert("kee", "tl", "zhuyin"), "\u310d\u311d"));
   it("\u706b h\u00e9r", () => strictEqual(convert("h\u00e9r", "tl", "zhuyin"), "\u310f\u311c\u02cb"));
+  it("or \u2192 \u311c", () => strictEqual(convert("or", "tl", "zhuyin"), "\u311c"));
   it("\u96de kere", () => strictEqual(convert("kere", "tl", "zhuyin"), "\u310d\u311c\u31a4"));
   it("\u8c6c tir", () => strictEqual(convert("tir", "tl", "zhuyin"), "\u3109\u31a8"));
   it("\u92c0 g\u00eern", () => strictEqual(convert("g\u00eern", "tl", "zhuyin"), "\u31a3\u31a8\u3123\u02ca"));
