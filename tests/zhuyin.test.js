@@ -19,6 +19,8 @@ describe("toZhuyin", () => {
   it("standalone ng", () => strictEqual(toZhuyin("ng1"), "\u31ad "));
   it("nasal vowel", () => strictEqual(toZhuyin("ann1"), "\u31a9 "));
   it("multi char consonant tshi", () => strictEqual(toZhuyin("tshi1"), "\u3111\u3127 "));
+  it("nasalized inn after palatalized ts", () => strictEqual(toZhuyin("tsinn5"), "\u3110\u31aa\u02ca"));
+  it("nasalized inn after palatalized tsh", () => strictEqual(toZhuyin("tshinn5"), "\u3111\u31aa\u02ca"));
   it("punctuation comma", () => ok(toZhuyin("ka1,").includes("\uff0c")));
   it("punctuation period", () => ok(toZhuyin("ka1.").includes("\u3002")));
 });
@@ -53,4 +55,6 @@ describe("fromZhuyin", () => {
   it("newline preserved", () => strictEqual(fromZhuyin("\u310d\u311a \n\u3119\u3128\u02ca"), "ka1\nsu5"));
   it("aspirated ph", () => strictEqual(fromZhuyin("\u3106\u311a "), "pha1"));
   it("extra space between tone-marked syllables", () => strictEqual(fromZhuyin("\u310d\u311a\u02cb \u3119\u3128\u02ca"), "ka2-su5"));
+  it("palatalized initial without medial i", () => strictEqual(fromZhuyin("\u3110\u31aa\u02ca"), "tsinn5"));
+  it("palatalized tsh without medial i", () => strictEqual(fromZhuyin("\u3111\u31aa\u02ca"), "tshinn5"));
 });

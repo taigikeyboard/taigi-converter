@@ -22,6 +22,8 @@ function buildReverseTones() {
 }
 
 const REV_INITIALS = buildReverse(ZHUYIN_INITIALS);
+REV_INITIALS.push(["\u3110", "ts"], ["\u3111", "tsh"], ["\u3112", "s"], ["\u31a2", "j"]);
+REV_INITIALS.sort((a, b) => b[0].length - a[0].length);
 const REV_VOWELS = buildReverse(ZHUYIN_VOWELS);
 REV_VOWELS.push(["\u3125", "ng"]);
 REV_VOWELS.sort((a, b) => b[0].length - a[0].length);
@@ -58,6 +60,7 @@ export function fromZhuyin(text) {
         if (initial || vowel) {
           let syl = initial + vowel;
           if (initial === "m" && vowel === "m") syl = "m";
+          if (syl.includes("oo") && /^[ptkh][48]$/.test(tl)) syl = syl.replace("oo", "o");
           parts.push({ type: "syllable", value: syl + tl });
         }
         initial = "";
@@ -172,6 +175,13 @@ export function toZhuyin(text, { encodeSafe = false } = {}) {
   if (vowel === "\u3125" && consonant === "") vowel = "\u31ad";
   if ((consonant + vowel).endsWith("\u31ad") && (consonant + vowel).slice(-2, -1) === "\u3127") {
     vowel = vowel.replace("\u31ad", "\u3125");
+  }
+  if (consonant.endsWith("\u3127") && vowel === "\u3123\u3123") {
+    consonant = consonant.slice(0, -1);
+    vowel = "\u31aa";
+  }
+  if (vowel.includes("\u311b") && hongimTone.length > 0 && hongimTone.charCodeAt(0) >= 0x31b4 && hongimTone.charCodeAt(0) <= 0x31b7) {
+    vowel = vowel.replaceAll("\u311b", "\u31a6");
   }
 
   let result = prePunctuation + consonant + vowel + hongimTone + remaining;
