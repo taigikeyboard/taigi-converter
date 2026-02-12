@@ -23,6 +23,8 @@ function buildReverseTones() {
 
 const REV_INITIALS = buildReverse(ZHUYIN_INITIALS);
 const REV_VOWELS = buildReverse(ZHUYIN_VOWELS);
+REV_VOWELS.push(["\u3125", "ng"]);
+REV_VOWELS.sort((a, b) => b[0].length - a[0].length);
 const REV_TONES = buildReverseTones();
 
 const REV_PUNCT = [
@@ -168,6 +170,9 @@ export function toZhuyin(text, { encodeSafe = false } = {}) {
   if (vowel === "" && consonant === "\u3107") { vowel = "\u31ac"; consonant = ""; }
   if (vowel === "" && consonant === "\u312b") { vowel = "\u31ad"; consonant = ""; }
   if (vowel === "\u3125" && consonant === "") vowel = "\u31ad";
+  if ((consonant + vowel).endsWith("\u31ad") && (consonant + vowel).slice(-2, -1) === "\u3127") {
+    vowel = vowel.replace("\u31ad", "\u3125");
+  }
 
   let result = prePunctuation + consonant + vowel + hongimTone + remaining;
 

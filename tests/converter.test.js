@@ -140,6 +140,10 @@ describe("convert API", () => {
     strictEqual(convert("Tsi\u030dt ki tsh\u00e1u, tsi\u030dt ti\u00e1m l\u014do", "tl", "zhuyin"),
       "\u3110\u3127\u31b5\u0307 \u310d\u3127 \u3118\u3120\u02cb \uff0c \u3110\u3127\u31b5\u0307 \u3109\u3127\u31b0\u02cb \u310c\u31a6\u02eb");
   });
+  it("Ts\u00ecng-l\u00e2ng \u00ea \u00ec-ki\u00e0n i it-kh\u00e0i hu\u00e1n-tu\u00ec.", () => {
+    strictEqual(convert("Ts\u00ecng-l\u00e2ng \u00ea \u00ec-ki\u00e0n i it-kh\u00e0i hu\u00e1n-tu\u00ec.", "tl", "zhuyin"),
+      "\u3110\u3127\u3125\u02ea \u310c\u3124\u02ca \u31a4\u02ca \u3127\u02ea \u310d\u3127\u3122\u02ea \u3127 \u3127\u31b5 \u310e\u311e\u02ea \u310f\u3128\u3122\u02cb \u3109\u3128\u3127\u02ea \u3002");
+  });
   it("tl to poj ing to eng", () => ok(convert("p\u00eeng", "tl", "poj").includes("\u00eang")));
   it("preserves non syllable text", () => ok(convert("hello-world", "tl", "poj").includes("-")));
   it("preserves case title", () => ok(convert("T\u00e2i-g\u00ed", "tl", "poj")[0] === "T"));
