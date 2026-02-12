@@ -103,7 +103,7 @@
 
     .result-label {
       flex-shrink: 0;
-      width: 11rem;
+      width: 8rem;
       font-size: 15px;
       font-weight: 400;
       color: #86868b;
@@ -211,18 +211,6 @@
         <div class="result-label">台語注音</div>
         <div class="result-value placeholder" id="out-tps">見本: ㄌㄚㆻ̇ ㆣㄨㆤㆷ̇ ㄉㄤ</div>
       </div>
-      <!-- <div class="result-row" style="margin-top: 0.5rem">
-        <div class="result-label">台羅正式版 (永靖腔)</div>
-        <div class="result-value placeholder" id="out-tl-yj">見本: la̍k-gue̍h-tang</div>
-      </div> -->
-      <!-- <div class="result-row">
-        <div class="result-label">台羅傳統版 (永靖腔)</div>
-        <div class="result-value placeholder" id="out-tl-trad-yj">見本: la̍k-gue̍h-tang</div>
-      </div> -->
-      <!-- <div class="result-row">
-        <div class="result-label">台羅聲調數字 (永靖腔)</div>
-        <div class="result-value placeholder" id="out-tl-num-yj">見本: lak8-gueh8-tang1</div>
-      </div> -->
     </div>
   </div>
 
@@ -237,9 +225,7 @@
       tl: document.getElementById("out-tl"),
       tlTrad: document.getElementById("out-tl-trad"),
       tlNum: document.getElementById("out-tl-num"),
-      tlYj: document.getElementById("out-tl-yj"),
-      tlTradYj: document.getElementById("out-tl-trad-yj"),
-      tlNumYj: document.getElementById("out-tl-num-yj"),
+
       poj: document.getElementById("out-poj"),
       pojNum: document.getElementById("out-poj-num"),
       tps: document.getElementById("out-tps"),
@@ -249,9 +235,7 @@
       tl: "見本: la̍k-gue̍h-tang",
       tlTrad: "見本: la̍k-gue̍h-tang",
       tlNum: "見本: lak8-gueh8-tang1",
-      tlYj: "見本: la̍k-gue̍h-tang",
-      tlTradYj: "見本: la̍k-gue̍h-tang",
-      tlNumYj: "見本: lak8-gueh8-tang1",
+
       poj: "見本: la̍k-goe̍h-tang",
       pojNum: "見本: lak8-goeh8-tang1",
       tps: "見本: ㄌㄚㆻ̇ ㆣㄨㆤㆷ̇ ㄉㄤ",
@@ -298,20 +282,9 @@
       const toTrad = (s) => s.replace(/nn/g, "\u207f").replace(/oo/g, "o\u00b7");
       const tlTrad = toTrad(tlMarks);
 
-      const toYongjing = (s) => s.normalize("NFD")
-        .replace(/(?<![aeuoAEUO][\u0300-\u036f]?)i([\u0300-\u036f]?)([nk])/gi,
-          (m, mark, c) => (m[0] === "I" ? "E" : "e") + mark + c)
-        .normalize("NFC");
-      const yjMarks = toYongjing(tlMarks);
-      const yjTrad = toTrad(yjMarks);
-      const yjNum = toYongjing(tlNum);
-
       setResult("tl", tlMarks);
       setResult("tlTrad", tlTrad);
       setResult("tlNum", tlNum);
-      setResult("tlYj", yjMarks);
-      setResult("tlTradYj", yjTrad);
-      setResult("tlNumYj", yjNum);
       setResult("poj", pojMarks);
       setResult("pojNum", pojNum);
       setResult("tps", tps);
