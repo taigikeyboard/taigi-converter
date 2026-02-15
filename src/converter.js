@@ -2,6 +2,7 @@ import { isStopTone, normalizeToTl, parseSyllable, splitInitialFinal, stripToneM
 import { toTl } from "./tl.js";
 import { toPoj } from "./poj.js";
 import { fromZhuyin, toZhuyin } from "./zhuyin.js";
+import { segmentWords } from "./segmenter.js";
 
 const SYSTEMS = new Set(["tl", "poj", "zhuyin"]);
 
@@ -17,7 +18,7 @@ export function convert(text, source, target) {
   if (!SYSTEMS.has(target)) throw new Error(`Unknown target system: ${target}`);
   if (source === target) return text;
   if (source === "zhuyin") {
-    const numbered = fromZhuyin(text);
+    const numbered = segmentWords(fromZhuyin(text));
     return toToneMark(numbered, target);
   }
 

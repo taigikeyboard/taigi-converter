@@ -223,6 +223,7 @@
   <script type="module">
     import { convert, toToneNumber, toToneMark } from "./src/converter.js";
     import { isZhuyin, fromZhuyin } from "./src/zhuyin.js";
+    import { segmentWords } from "./src/segmenter.js";
 
     const inputEl = document.getElementById("input");
     const rows = {
@@ -265,7 +266,7 @@
 
       let numbered = "";
       try {
-        numbered = isZhuyin(text) ? fromZhuyin(text) : toToneNumber(text);
+        numbered = isZhuyin(text) ? segmentWords(fromZhuyin(text)) : toToneNumber(text);
       } catch { }
 
       let tlMarks = "";
