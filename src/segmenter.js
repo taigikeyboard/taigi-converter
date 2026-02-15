@@ -32,29 +32,41 @@ function segmentRun(syllables) {
   return result.join(" ");
 }
 
-export function segmentWords(text) {
-  return text.split("\n").map(line => {
-    const tokens = [];
-    let current = "";
+function segmentLine(line) {
+  const tokens = [];
+  let current = "";
 
-    for (const ch of line) {
-      if (/[a-zA-Z0-9]/.test(ch) || ch === "-") {
-        current += ch;
-      } else {
-        if (current) {
-          tokens.push({ type: "run", value: current });
-          current = "";
-        }
-        tokens.push({ type: "other", value: ch });
+  for (const ch of line) {
+    if (/[a-zA-Z0-9]/.test(ch) || ch === "-") {
+      current += ch;
+    } else {
+      if (current) {
+        tokens.push({ type: "run", value: current });
+        current = "";
       }
+      tokens.push({ type: "other", value: ch });
     }
-    if (current) tokens.push({ type: "run", value: current });
+  }
+  if (current) tokens.push({ type: "run", value: current });
 
-    return tokens.map(tok => {
-      if (tok.type !== "run") return tok.value;
-      const syllables = tok.value.split("-").filter(Boolean);
-      if (syllables.length <= 1) return tok.value;
-      return segmentRun(syllables);
-    }).join("");
-  }).join("\n");
+  return tokens.map((tok, i) => {
+    if (tok.type !== "run") {
+      const next = tokens[i + 1];
+      if (/[,.?]/.test(tok.value) && next && next.type === "run") {
+        return tok.value + " ";
+      }
+      return tok.value;
+    }
+    const syllables = tok.value.split("-").filter(Boolean);
+    if (syllables.length <= 1) return tok.value;
+    return segmentRun(syllables);
+  }).join("");
+}
+
+export function segmentWords(text) {
+  let out = text.split("\n").map(segmentLine).join("\n");
+  if (/[,.?]/.test(out)) {
+    out = out.replace(/[a-zA-Z]/, ch => ch.toUpperCase());
+  }
+  return out;
 }

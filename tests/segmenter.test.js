@@ -30,8 +30,17 @@ describe("segmentWords", () => {
     );
   });
 
-  it("preserves punctuation", () => {
-    assert.equal(segmentWords("li2-ho2.gua2-beh4"), "li2-ho2.gua2-beh4");
+  it("preserves punctuation with space after", () => {
+    assert.equal(segmentWords("li2-ho2.gua2-beh4"), "Li2-ho2. gua2-beh4");
+    assert.equal(segmentWords("li2-ho2,gua2-beh4"), "Li2-ho2, gua2-beh4");
+  });
+
+  it("capitalizes first letter when punctuation present", () => {
+    assert.equal(segmentWords("gua2-beh4,lim1-tsui2."), "Gua2-beh4, lim1-tsui2.");
+  });
+
+  it("does not capitalize without punctuation", () => {
+    assert.equal(segmentWords("gua2-beh4-lim1-tsui2"), "gua2-beh4 lim1-tsui2");
   });
 
   it("preserves newlines", () => {
