@@ -261,6 +261,33 @@ describe("toToneNumber", () => {
   it("stop tone no mark", () => strictEqual(toToneNumber("kah"), "kah4"));
 });
 
+describe("toToneNumber POJ non-ASCII vs ASCII", () => {
+  const pojToNum = (text) => toToneNumber(toToneMark(toToneNumber(text), "poj"));
+  const pojToNumAscii = (text) => pojToNum(text).replace(/\u207f/g, "nn").replace(/o\u0358/g, "oo");
+
+  it("non-ASCII preserves o dot", () => ok(pojToNum("koo2").includes("o\u0358")));
+  it("ASCII replaces o dot with oo", () => strictEqual(pojToNumAscii("koo2"), "ko\u0301o2".replace("o\u0301", "o")));
+  it("ASCII replaces o dot with oo", () => ok(!pojToNumAscii("koo2").includes("\u0358")));
+
+  it("non-ASCII preserves nasal n", () => ok(pojToNum("kann2").includes("\u207f")));
+  it("ASCII replaces nasal n with nn", () => ok(pojToNumAscii("kann2").includes("nn")));
+  it("ASCII has no nasal n", () => ok(!pojToNumAscii("kann2").includes("\u207f")));
+
+  it("non-ASCII preserves both in compound", () => {
+    const result = pojToNum("oo5-ann2");
+    ok(result.includes("o\u0358"));
+    ok(result.includes("\u207f"));
+  });
+
+  it("ASCII replaces both in compound", () => {
+    const result = pojToNumAscii("oo5-ann2");
+    ok(!result.includes("\u0358"));
+    ok(!result.includes("\u207f"));
+    ok(result.includes("oo"));
+    ok(result.includes("nn"));
+  });
+});
+
 describe("toToneMark", () => {
   it("basic tl", () => strictEqual(toToneMark("ka2"), "k\u00e1"));
   it("tone 5", () => strictEqual(toToneMark("ka5"), "k\u00e2"));

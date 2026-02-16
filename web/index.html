@@ -226,8 +226,12 @@
         <div class="result-value placeholder" id="out-poj">見本: la̍k-goe̍h-tang</div>
       </div>
       <div class="result-row">
-        <div class="result-label">白話字聲調數字</div>
+        <div class="result-label">白話字聲調數字 (ASCII)</div>
         <div class="result-value placeholder" id="out-poj-num">見本: lak8-goeh8-tang1</div>
+      </div>
+      <div class="result-row">
+        <div class="result-label">白話字聲調數字</div>
+        <div class="result-value placeholder" id="out-poj-num-non-ascii">見本: lak8-goe͘h8-tang1</div>
       </div>
       <div class="result-row">
         <div class="result-label">台語注音</div>
@@ -239,7 +243,7 @@
     <li>台羅正式版、傳統版差佇 oo → o͘, nn → ⁿ 轉換。</li>
     <li>聲調數字採用 ASCII 正規化，o͘ 佮 ⁿ 統一轉成 oo, nn。</li>
     <li>台羅轉換參考<a href="https://english.moe.gov.tw/public/Attachment/9851214271.pdf">教育部拼音手冊</a>。</li>
-    <li>問題反應: info@taigikeyboard.tw</li>
+    <li>問題反應：info@taigikeyboard.tw。</li>
   </ol>
 
   <footer>&copy; 2026 Bîn-hiân · <a href="https://portaly.cc/siansiansu/support">贊助支持 ❤️</a></footer>
@@ -257,6 +261,7 @@
 
       poj: document.getElementById("out-poj"),
       pojNum: document.getElementById("out-poj-num"),
+      pojNumNonAscii: document.getElementById("out-poj-num-non-ascii"),
       tps: document.getElementById("out-tps"),
     };
 
@@ -267,6 +272,7 @@
 
       poj: "見本: la̍k-goe̍h-tang",
       pojNum: "見本: lak8-goeh8-tang1",
+      pojNumNonAscii: "見本: lak8-goe͘h8-tang1",
       tps: "見本: ㄌㄚㆻ̇ ㆣㄨㆤㆷ̇ ㄉㄤ",
     };
 
@@ -302,8 +308,11 @@
       let tlNum = "";
       try { tlNum = toToneNumber(tlMarks); } catch { }
 
+      let pojNumRaw = "";
+      try { pojNumRaw = toToneNumber(pojMarks); } catch { }
+
       let pojNum = "";
-      try { pojNum = toToneNumber(pojMarks).replace(/\u207f/g, "nn").replace(/o\u0358/g, "oo"); } catch { }
+      try { pojNum = pojNumRaw.replace(/\u207f/g, "nn").replace(/o\u0358/g, "oo"); } catch { }
 
       let tps = "";
       try { tps = convert(tlMarks, "tl", "zhuyin"); } catch { }
@@ -316,6 +325,7 @@
       setResult("tlNum", tlNum);
       setResult("poj", pojMarks);
       setResult("pojNum", pojNum);
+      setResult("pojNumNonAscii", pojNumRaw);
       setResult("tps", tps);
     }
 
