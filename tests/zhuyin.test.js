@@ -24,6 +24,7 @@ describe("toZhuyin", () => {
   it("multi char consonant tshi", () => strictEqual(toZhuyin("tshi1"), "\u3111\u3127 "));
   it("nasalized inn after palatalized ts", () => strictEqual(toZhuyin("tsinn5"), "\u3110\u31aa\u02ca"));
   it("nasalized inn after palatalized tsh", () => strictEqual(toZhuyin("tshinn5"), "\u3111\u31aa\u02ca"));
+  it("tone 6", () => strictEqual(toZhuyin("ka6"), "\u310d\u311a\u02c7"));
   it("punctuation comma", () => ok(toZhuyin("ka1,").includes("\uff0c")));
   it("punctuation period", () => ok(toZhuyin("ka1.").includes("\u3002")));
 });
@@ -32,6 +33,7 @@ describe("isZhuyin", () => {
   it("detects TPS characters", () => ok(isZhuyin("\u3105\u311a ")));
   it("rejects plain latin", () => ok(!isZhuyin("ka2")));
   it("rejects empty string", () => ok(!isZhuyin("")));
+  it("detects mixed TPS and latin", () => ok(isZhuyin("abc\u3105def")));
 });
 
 describe("fromZhuyin", () => {
@@ -63,4 +65,5 @@ describe("fromZhuyin", () => {
   it("extra space between tone-marked syllables", () => strictEqual(fromZhuyin("\u310d\u311a\u02cb \u3119\u3128\u02ca"), "ka2-su5"));
   it("palatalized initial without medial i", () => strictEqual(fromZhuyin("\u3110\u31aa\u02ca"), "tsinn5"));
   it("palatalized tsh without medial i", () => strictEqual(fromZhuyin("\u3111\u31aa\u02ca"), "tshinn5"));
+  it("tone 6", () => strictEqual(fromZhuyin("\u310d\u311a\u02c7"), "ka6"));
 });

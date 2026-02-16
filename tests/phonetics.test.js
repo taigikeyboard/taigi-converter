@@ -33,6 +33,18 @@ describe("stripToneMark", () => {
     strictEqual(tone, "8");
   });
 
+  it("breve tone 9", () => {
+    const [bare, tone] = stripToneMark("\u0103");
+    strictEqual(bare, "a");
+    strictEqual(tone, "9");
+  });
+
+  it("double acute tone 9", () => {
+    const [bare, tone] = stripToneMark("a\u030b");
+    strictEqual(bare, "a");
+    strictEqual(tone, "9");
+  });
+
   it("no tone mark", () => {
     const [bare, tone] = stripToneMark("a");
     strictEqual(bare, "a");

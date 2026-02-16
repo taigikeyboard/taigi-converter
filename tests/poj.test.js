@@ -30,6 +30,7 @@ describe("toPoj", () => {
   it("ik becomes ek", () => ok(toPoj("p", "ik", "4").includes("ek")));
   it("tone 1 no mark", () => strictEqual(toPoj("k", "a", "1"), "ka"));
   it("tone 2 acute", () => strictEqual(toPoj("k", "a", "2"), "k\u00e1"));
+  it("tone 3 grave", () => strictEqual(toPoj("k", "a", "3"), "k\u00e0"));
   it("tone 5 circumflex", () => strictEqual(toPoj("k", "a", "5"), "k\u00e2"));
   it("tone 7 macron", () => strictEqual(toPoj("k", "a", "7"), "k\u0101"));
   it("tone 9 breve", () => ok(toPoj("k", "a", "9").includes("\u0103")));

@@ -5,6 +5,7 @@ import { toTl } from "../src/tl.js";
 describe("toTl", () => {
   it("simple tone 2", () => strictEqual(toTl("k", "a", "2"), "k\u00e1"));
   it("tone 1 no mark", () => strictEqual(toTl("k", "a", "1"), "ka"));
+  it("tone 3 grave", () => strictEqual(toTl("k", "a", "3"), "k\u00e0"));
   it("tone 4 no mark", () => strictEqual(toTl("k", "ah", "4"), "kah"));
   it("tone 5 circumflex", () => strictEqual(toTl("k", "a", "5"), "k\u00e2"));
   it("tone 7 macron", () => strictEqual(toTl("k", "a", "7"), "k\u0101"));
