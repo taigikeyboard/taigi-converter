@@ -230,7 +230,7 @@
         <div class="result-value placeholder" id="out-poj-num">見本: lak8-goeh8-tang1</div>
       </div>
       <div class="result-row">
-        <div class="result-label">白話字聲調數字</div>
+        <div class="result-label">白話字聲調數字 (non-ASCII)</div>
         <div class="result-value placeholder" id="out-poj-num-non-ascii">見本: lak8-goe͘h8-tang1</div>
       </div>
       <div class="result-row">
@@ -317,7 +317,7 @@
       let tps = "";
       try { tps = convert(tlMarks, "tl", "zhuyin"); } catch { }
 
-      const toTrad = (s) => s.replace(/nn/g, "\u207f").replace(/o([\u0301\u0300\u0302\u030c\u0304\u030d\u0306]?)o/g, "o$1\u0358");
+      const toTrad = (s) => s.normalize("NFD").replace(/nn/g, "\u207f").replace(/o([\u0301\u0300\u0302\u030c\u0304\u030d\u0306]?)o/g, "o$1\u0358").normalize("NFC");
       const tlTrad = toTrad(tlMarks);
 
       setResult("tl", tlMarks);
