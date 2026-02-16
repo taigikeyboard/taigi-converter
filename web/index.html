@@ -211,7 +211,7 @@
     <div class="results">
       <div class="result-row">
         <div class="result-label">台羅 (正式版)</div>
-        <div class="result-value placeholder" id="out-tl">見本: la̍k-gue̍h-tang</div>
+        <div class="result-value placeholder" id="out-tl">見本: hóo-phīnn-sai</div>
       </div>
       <div class="result-row">
         <div class="result-label">台羅 (傳統版)</div>
@@ -241,7 +241,7 @@
   </div>
   <ol class="notes">
     <li>台羅正式版、傳統版差佇 oo → o͘, nn → ⁿ 轉換。</li>
-    <li>聲調數字採用 ASCII 正規化，o͘ 佮 ⁿ 統一轉成 oo, nn。</li>
+    <li>白話字聲調數字 (ASCII) 是採用 ASCII 標準化，o͘ 佮 ⁿ 統一轉成 oo, nn。</li>
     <li>台羅轉換參考<a href="https://english.moe.gov.tw/public/Attachment/9851214271.pdf">教育部拼音手冊</a>。</li>
     <li>問題反應：info@taigikeyboard.tw。</li>
   </ol>
@@ -317,7 +317,7 @@
       let tps = "";
       try { tps = convert(tlMarks, "tl", "zhuyin"); } catch { }
 
-      const toTrad = (s) => s.replace(/nn/g, "\u207f").replace(/oo/g, "o\u00b7");
+      const toTrad = (s) => s.replace(/nn/g, "\u207f").replace(/o([\u0301\u0300\u0302\u030c\u0304\u030d\u0306]?)o/g, "o$1\u0358");
       const tlTrad = toTrad(tlMarks);
 
       setResult("tl", tlMarks);
