@@ -167,6 +167,14 @@
       cursor: default;
     }
 
+    .notes {
+      margin-top: 1.25rem;
+      padding-left: 1.5rem;
+      font-size: 13px;
+      color: #86868b;
+      line-height: 1.8;
+    }
+
     footer {
       margin-top: 2.5rem;
       font-size: 13px;
@@ -193,15 +201,15 @@
     <textarea id="input" placeholder="Enter any word"></textarea>
     <div class="results">
       <div class="result-row">
-        <div class="result-label">台羅正式版</div>
+        <div class="result-label">台羅 (正式版)</div>
         <div class="result-value placeholder" id="out-tl">見本: la̍k-gue̍h-tang</div>
       </div>
       <div class="result-row">
-        <div class="result-label">台羅傳統版</div>
+        <div class="result-label">台羅 (傳統版)</div>
         <div class="result-value placeholder" id="out-tl-trad">見本: la̍k-gue̍h-tang</div>
       </div>
       <div class="result-row">
-        <div class="result-label">台羅聲調數字 (ASCII)</div>
+        <div class="result-label">台羅聲調數字</div>
         <div class="result-value placeholder" id="out-tl-num">見本: lak8-gueh8-tang1</div>
       </div>
       <div class="result-row">
@@ -209,7 +217,7 @@
         <div class="result-value placeholder" id="out-poj">見本: la̍k-goe̍h-tang</div>
       </div>
       <div class="result-row">
-        <div class="result-label">白話字聲調數字 (ASCII)</div>
+        <div class="result-label">白話字聲調數字</div>
         <div class="result-value placeholder" id="out-poj-num">見本: lak8-goeh8-tang1</div>
       </div>
       <div class="result-row">
@@ -217,6 +225,10 @@
         <div class="result-value placeholder" id="out-tps">見本: ㄌㄚㆻ̇ ㆣㄨㆤㆷ̇ ㄉㄤ</div>
       </div>
     </div>
+    <ol class="notes">
+      <li>台羅正式版、傳統版差佇 oo → o͘, nn → ⁿ 轉換，請參考教育部拼音手冊。</li>
+      <li>聲調數字採用 ASCII 正規化，o͘ 佮 ⁿ 統一轉成 oo, nn。</li>
+    </ol>
   </div>
 
   <footer>&copy; 2026 Bîn-hiân · <a href="mailto:info@taigikeyboard.tw">問題反應</a> · <a
