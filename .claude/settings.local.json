@@ -1,0 +1,34 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(uv init:*)",
+      "Bash(uv add:*)",
+      "Bash(uv run python:*)",
+      "Bash(uv run pytest:*)",
+      "Bash(uv run ruff:*)",
+      "Bash(uv run ruff format:*)",
+      "Bash(uv run taigi-converter convert:*)",
+      "Bash(uv run:*)",
+      "Bash(uv run taigi-converter:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "WebSearch",
+      "Bash(node:*)",
+      "Bash(git rm:*)",
+      "WebFetch(domain:zh.wikipedia.org)",
+      "WebFetch(domain:sites.google.com)",
+      "Bash(python3:*)",
+      "Bash(git -C /Users/alexsu/Workspace/taigi-converter status)",
+      "Bash(git -C /Users/alexsu/Workspace/taigi-converter diff --stat)",
+      "Bash(git -C /Users/alexsu/Workspace/taigi-converter log --oneline -5)",
+      "Bash(git -C /Users/alexsu/Workspace/taigi-converter add scripts/build-dictionary.js src/dictionary.js src/segmenter.js tests/segmenter.test.js package.json src/converter.js src/index.js web/index.html)",
+      "Bash(git -C /Users/alexsu/Workspace/taigi-converter diff --cached --stat)",
+      "Bash(git -C /Users/alexsu/Workspace/taigi-converter push)",
+      "Bash(git -C /Users/alexsu/Workspace/taigi-converter diff)",
+      "Bash(git -C /Users/alexsu/Workspace/taigi-converter log --oneline -3)",
+      "Bash(git -C /Users/alexsu/Workspace/taigi-converter add src/segmenter.js tests/segmenter.test.js)",
+      "Bash(git -C:*)"
+    ]
+  }
+}
