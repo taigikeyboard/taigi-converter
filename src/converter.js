@@ -7,7 +7,7 @@ import { segmentWords } from "./segmenter.js";
 const SYSTEMS = new Set(["tl", "poj", "zhuyin"]);
 
 const SYLLABLE_RE = new RegExp(
-  "([A-Za-z\\u0300-\\u030d\\u030b\\u0306\\u0358\\u207f" +
+  "([A-Za-z\\u0300-\\u030d\\u030b\\u0306\\u0358\\u207f\\u1d3a" +
   "\\u00e1\\u00e0\\u00e2\\u00ea\\u00e9\\u00e8\\u00f3\\u00f2\\u00f4\\u00fa\\u00f9\\u00ec\\u00ee" +
   "\\u0101\\u0113\\u012b\\u014d\\u016b\\u01ce\\u011b\\u030d" +
   "]+[0-9]?)", "g"
@@ -60,12 +60,12 @@ export function toToneNumber(text) {
   let i = 0;
   while (i < decomposed.length) {
     const ch = decomposed[i];
-    if (/\p{L}/u.test(ch) || ch === "\u0358" || ch === "\u207f") {
+    if (/\p{L}/u.test(ch) || ch === "\u0358" || ch === "\u207f" || ch === "\u1d3a") {
       const syllableStart = i;
       while (i < decomposed.length && (
         /\p{L}/u.test(decomposed[i]) ||
         /^\p{M}/u.test(decomposed[i]) ||
-        decomposed[i] === "\u0358" || decomposed[i] === "\u207f"
+        decomposed[i] === "\u0358" || decomposed[i] === "\u207f" || decomposed[i] === "\u1d3a"
       )) { i++; }
       if (i < decomposed.length && /[0-9]/.test(decomposed[i])) {
         result.push(decomposed.slice(syllableStart, i + 1));
@@ -118,7 +118,7 @@ function detectCase(text) {
 }
 
 function applyCase(text, caseType) {
-  if (caseType === "upper") return text.toUpperCase();
+  if (caseType === "upper") return text.toUpperCase().replaceAll("\u207f", "\u1d3a");
   if (caseType === "title") return text ? text[0].toUpperCase() + text.slice(1) : text;
   return text;
 }

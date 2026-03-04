@@ -242,6 +242,8 @@ describe("convert API", () => {
   it("tl to poj ing to eng", () => ok(convert("p\u00eeng", "tl", "poj").includes("\u00eang")));
   it("preserves non syllable text", () => ok(convert("hello-world", "tl", "poj").includes("-")));
   it("preserves case title", () => ok(convert("T\u00e2i-g\u00ed", "tl", "poj")[0] === "T"));
+  it("uppercase nasalization uses capital modifier", () => ok(convert("PIANN", "tl", "poj").includes("\u1d3a")));
+  it("title case nasalization stays lowercase", () => ok(convert("Piann", "tl", "poj").includes("\u207f")));
 });
 
 describe("toToneNumber", () => {
@@ -259,6 +261,12 @@ describe("toToneNumber", () => {
 
   it("no tone", () => strictEqual(toToneNumber("ka"), "ka1"));
   it("stop tone no mark", () => strictEqual(toToneNumber("kah"), "kah4"));
+  it("round-trip uppercase nasalization", () => {
+    const poj = convert("PIANN", "tl", "poj");
+    ok(poj.includes("\u1d3a"));
+    const numbered = toToneNumber(poj);
+    ok(/1$/.test(numbered.trim()));
+  });
 });
 
 describe("toToneNumber POJ non-ASCII vs ASCII", () => {

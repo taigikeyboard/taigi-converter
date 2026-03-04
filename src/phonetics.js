@@ -41,6 +41,7 @@ export function normalizeToTl(text) {
     .replaceAll("ou", "oo")
     .replaceAll("o\u0358", "oo")
     .replaceAll("\u207f", "nn")
+    .replaceAll("\u1d3a", "nn")
     .replaceAll("oa", "ua")
     .replaceAll("oe", "ue")
     .replaceAll("eng", "ing")

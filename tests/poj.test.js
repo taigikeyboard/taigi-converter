@@ -52,4 +52,9 @@ describe("toPoj", () => {
     const result = toPoj("k", "oo", "2");
     ok(result !== null);
   });
+
+  it("nasal mark is lowercase superscript n", () => {
+    const result = toPoj("p", "iann", "3");
+    ok(result.includes("\u207f"));
+  });
 });
