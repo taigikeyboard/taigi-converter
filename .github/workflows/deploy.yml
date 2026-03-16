@@ -26,6 +26,8 @@ jobs:
           cp web/index.html docs/
           cp src/*.js docs/src/
           cp web/assets/icon/*.webp docs/assets/icon/
+          cp web/robots.txt docs/
+          cp web/sitemap.xml docs/
           cp jf-openhuninn-2.1.ttf docs/
       - uses: actions/upload-pages-artifact@v4
         with:

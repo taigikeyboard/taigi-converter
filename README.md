@@ -1,6 +1,6 @@
 # taigi-converter
 
-台語通用轉換器 — bidirectional converter between Taigi phonetic systems: TL (台語羅馬字), POJ (白話字), TPS (台語注音), and tone number/mark formats.
+台語通用轉換器 — bidirectional converter between Taigi phonetic systems: TL (台語羅馬字), POJ (白話字), TPS (方音符號), and tone number/mark formats.
 
 ## Features
 
