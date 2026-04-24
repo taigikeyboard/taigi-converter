@@ -1,5 +1,10 @@
 # taigi-converter
 
+[![npm version](https://img.shields.io/npm/v/@taigikeyboard/taigi.svg)](https://www.npmjs.com/package/@taigikeyboard/taigi)
+[![npm downloads](https://img.shields.io/npm/dm/@taigikeyboard/taigi.svg)](https://www.npmjs.com/package/@taigikeyboard/taigi)
+[![node](https://img.shields.io/node/v/@taigikeyboard/taigi.svg)](https://nodejs.org)
+[![license](https://img.shields.io/npm/l/@taigikeyboard/taigi.svg)](./LICENSE)
+
 Bidirectional converter between Taiwanese phonetic systems: TL (Tai-lo), POJ (Pe-oh-e-ji), and TPS (方音符號), with tone mark / tone number conversion.
 
 ## Features
