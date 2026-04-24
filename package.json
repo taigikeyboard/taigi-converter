@@ -1,12 +1,51 @@
 {
-  "name": "taigi-converter",
+  "name": "@taigikeyboard/taigi",
   "version": "0.1.0",
+  "description": "Bidirectional converter between Taiwanese Hokkien phonetic systems: TL (Tai-lo), POJ (Pe-oh-e-ji), and TPS (方音符號), with tone mark / tone number conversion",
   "type": "module",
   "exports": {
     ".": "./src/index.js"
   },
+  "bin": {
+    "tai": "bin/tai.js"
+  },
+  "files": [
+    "src/",
+    "bin/",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "keywords": [
+    "taigi",
+    "taiwanese",
+    "hokkien",
+    "tailo",
+    "tai-lo",
+    "poj",
+    "pe-oh-e-ji",
+    "tps",
+    "phonetic",
+    "converter",
+    "cli"
+  ],
+  "author": "siansiansu",
+  "license": "MIT",
+  "homepage": "https://github.com/siansiansu/taigi-converter#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/siansiansu/taigi-converter.git"
+  },
+  "bugs": {
+    "url": "https://github.com/siansiansu/taigi-converter/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
-    "test": "node --test tests/",
+    "test": "node --test tests/*.js",
     "build:dict": "node scripts/build-dictionary.js"
   }
 }

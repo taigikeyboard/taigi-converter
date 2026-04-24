@@ -1,0 +1,155 @@
+import { describe, it } from "node:test";
+import { strictEqual, match } from "node:assert";
+import { spawnSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
+
+const CLI = join(dirname(fileURLToPath(import.meta.url)), "..", "bin", "tai.js");
+
+function run(args, { input } = {}) {
+  const result = spawnSync(process.execPath, [CLI, ...args], {
+    input,
+    encoding: "utf8",
+  });
+  return { stdout: result.stdout, stderr: result.stderr, code: result.status };
+}
+
+describe("tai CLI", () => {
+  describe("basic conversion", () => {
+    it("tl -> poj via argv", () => {
+      const { stdout, code } = run(["-f", "tl", "-t", "poj", "peh8-oe7-ji7"]);
+      strictEqual(code, 0);
+      strictEqual(stdout, "pe̍h-ōe-jī");
+    });
+
+    it("poj -> tl via argv", () => {
+      const { stdout, code } = run(["-f", "poj", "-t", "tl", "chhiu-a"]);
+      strictEqual(code, 0);
+      strictEqual(stdout, "tshiu-a");
+    });
+
+    it("tl -> tps via argv", () => {
+      const { stdout, code } = run(["-f", "tl", "-t", "tps", "tai5-gi2"]);
+      strictEqual(code, 0);
+      match(stdout, /ㄉㄞ/);
+    });
+
+    it("long flags", () => {
+      const { stdout, code } = run(["--from", "tl", "--to", "poj", "peh8"]);
+      strictEqual(code, 0);
+      strictEqual(stdout, "pe̍h");
+    });
+  });
+
+  describe("stdin", () => {
+    it("reads stdin when no positional args", () => {
+      const { stdout, code } = run(["-f", "tl", "-t", "poj"], { input: "peh8" });
+      strictEqual(code, 0);
+      strictEqual(stdout, "pe̍h");
+    });
+
+    it("argv takes precedence over stdin", () => {
+      const { stdout, code } = run(["-f", "tl", "-t", "poj", "tai5"], { input: "ignored" });
+      strictEqual(code, 0);
+      match(stdout, /tâi/);
+    });
+
+    it("preserves newlines from stdin", () => {
+      const { stdout, code } = run(["-f", "tl", "-t", "poj"], { input: "peh8\ntai5\n" });
+      strictEqual(code, 0);
+      match(stdout, /\n/);
+    });
+  });
+
+  describe("tone conversion (same system)", () => {
+    it("tl -> tl tone number", () => {
+      const { stdout, code } = run(["-f", "tl", "-t", "tl", "--tone", "number", "pe̍h-ōe-jī"]);
+      strictEqual(code, 0);
+      strictEqual(stdout, "peh8-oe7-ji7");
+    });
+
+    it("tl -> tl tone mark", () => {
+      const { stdout, code } = run(["-f", "tl", "-t", "tl", "--tone", "mark", "peh8-ji7"]);
+      strictEqual(code, 0);
+      strictEqual(stdout, "pe̍h-jī");
+    });
+
+    it("poj -> poj tone mark", () => {
+      const { stdout, code } = run(["-f", "poj", "-t", "poj", "--tone", "mark", "peh8-oe7-ji7"]);
+      strictEqual(code, 0);
+      strictEqual(stdout, "pe̍h-ōe-jī");
+    });
+  });
+
+  describe("--ascii", () => {
+    it("replaces o-dot and nasal", () => {
+      const { stdout, code } = run(["-f", "poj", "-t", "poj", "--tone", "number", "--ascii", "o͘-á"]);
+      strictEqual(code, 0);
+      match(stdout, /oo/);
+    });
+
+    it("no-op when no POJ diacritics present", () => {
+      const { stdout, code } = run(["-f", "tl", "-t", "poj", "--ascii", "tai5"]);
+      strictEqual(code, 0);
+      match(stdout, /tâi/);
+    });
+  });
+
+  describe("errors", () => {
+    it("exits 2 on missing --from", () => {
+      const { stderr, code } = run(["-t", "poj", "text"]);
+      strictEqual(code, 2);
+      match(stderr, /missing --from/);
+    });
+
+    it("exits 2 on unknown system", () => {
+      const { stderr, code } = run(["-f", "bogus", "-t", "poj", "text"]);
+      strictEqual(code, 2);
+      match(stderr, /unknown system 'bogus'/);
+    });
+
+    it("rejects zhuyin alias", () => {
+      const { stderr, code } = run(["-f", "zhuyin", "-t", "tl", "ㄉㄞˊ"]);
+      strictEqual(code, 2);
+      match(stderr, /unknown system 'zhuyin'/);
+    });
+
+    it("rejects --tone with different systems", () => {
+      const { stderr, code } = run(["-f", "tl", "-t", "poj", "--tone", "mark", "tai5"]);
+      strictEqual(code, 2);
+      match(stderr, /--tone only applies/);
+    });
+
+    it("rejects --tone with tps", () => {
+      const { stderr, code } = run(["-f", "tps", "-t", "tps", "--tone", "mark", "ㄉㄞˊ"]);
+      strictEqual(code, 2);
+      match(stderr, /does not apply to tps/);
+    });
+
+    it("rejects invalid --tone value", () => {
+      const { stderr, code } = run(["-f", "tl", "-t", "tl", "--tone", "bogus", "tai5"]);
+      strictEqual(code, 2);
+      match(stderr, /invalid --tone/);
+    });
+  });
+
+  describe("--help and --version", () => {
+    it("--help prints usage", () => {
+      const { stdout, code } = run(["--help"]);
+      strictEqual(code, 0);
+      match(stdout, /Usage: tai/);
+    });
+
+    it("-h shorthand", () => {
+      const { stdout, code } = run(["-h"]);
+      strictEqual(code, 0);
+      match(stdout, /Usage: tai/);
+    });
+
+    it("--version prints semver", () => {
+      const { stdout, code } = run(["--version"]);
+      strictEqual(code, 0);
+      match(stdout, /^\d+\.\d+\.\d+/);
+    });
+  });
+});
