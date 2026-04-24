@@ -1,2 +1,2 @@
-export { convert, toToneNumber, toToneMark } from "./converter.js";
+export { convert, toToneNumber, toToneNumberAscii, toToneMark } from "./converter.js";
 export { segmentWords } from "./segmenter.js";

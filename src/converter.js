@@ -94,6 +94,14 @@ export function toToneNumber(text) {
   return result.join("");
 }
 
+export function toToneNumberAscii(text) {
+  return toToneNumber(text)
+    .replaceAll("o͘", "oo")
+    .replaceAll("O͘", "OO")
+    .replaceAll("ⁿ", "nn")
+    .replaceAll("ᴺ", "NN");
+}
+
 export function toToneMark(text, system = "tl") {
   const assembler = system === "tl" ? toTl : toPoj;
   return text.replace(SYLLABLE_RE, (match) => {

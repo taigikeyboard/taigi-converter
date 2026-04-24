@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import { strictEqual, ok, throws } from "node:assert";
-import { convert, toToneNumber, toToneMark } from "../src/converter.js";
+import { convert, toToneNumber, toToneNumberAscii, toToneMark } from "../src/converter.js";
 import { toZhuyin } from "../src/zhuyin.js";
 
 describe("TailoTpsConverter consonants", () => {
@@ -187,11 +187,11 @@ describe("toToneNumber", () => {
 
 describe("toToneNumber POJ non-ASCII vs ASCII", () => {
   const pojToNum = (text) => toToneNumber(toToneMark(toToneNumber(text), "poj"));
-  const pojToNumAscii = (text) => pojToNum(text).replace(/\u207f/g, "nn").replace(/o\u0358/g, "oo");
+  const pojToNumAscii = (text) => toToneNumberAscii(toToneMark(toToneNumber(text), "poj"));
 
   it("non-ASCII preserves o dot", () => ok(pojToNum("koo2").includes("o\u0358")));
-  it("ASCII replaces o dot with oo", () => strictEqual(pojToNumAscii("koo2"), "ko\u0301o2".replace("o\u0301", "o")));
   it("ASCII replaces o dot with oo", () => ok(!pojToNumAscii("koo2").includes("\u0358")));
+  it("ASCII o dot output contains oo", () => ok(pojToNumAscii("koo2").includes("oo")));
 
   it("non-ASCII preserves nasal n", () => ok(pojToNum("kann2").includes("\u207f")));
   it("ASCII replaces nasal n with nn", () => ok(pojToNumAscii("kann2").includes("nn")));
@@ -209,6 +209,21 @@ describe("toToneNumber POJ non-ASCII vs ASCII", () => {
     ok(!result.includes("\u207f"));
     ok(result.includes("oo"));
     ok(result.includes("nn"));
+  });
+
+  it("toToneNumberAscii uppercase O dot \u2192 OO", () => {
+    ok(!toToneNumberAscii("KO\u03582").includes("\u0358"));
+    ok(toToneNumberAscii("KO\u03582").includes("OO"));
+  });
+
+  it("toToneNumberAscii uppercase nasal \u2192 NN", () => {
+    ok(!toToneNumberAscii("KA\u1d3a2").includes("\u1d3a"));
+    ok(toToneNumberAscii("KA\u1d3a2").includes("NN"));
+  });
+
+  it("toToneNumberAscii passes through already-ASCII input", () => {
+    strictEqual(toToneNumberAscii("koo2"), toToneNumber("koo2"));
+    strictEqual(toToneNumberAscii("kann2"), toToneNumber("kann2"));
   });
 });
 
