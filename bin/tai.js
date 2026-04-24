@@ -9,7 +9,7 @@ const SYSTEM_ALIASES = { tl: "tl", poj: "poj", tps: "zhuyin" };
 
 const HELP = `Usage: tai -f <system> -t <system> [options] [text...]
 
-Convert between Taiwanese Hokkien phonetic systems.
+Convert between Taiwanese phonetic systems.
 
 Systems:
   tl          Tai-lo (Taiwanese Romanization System)
