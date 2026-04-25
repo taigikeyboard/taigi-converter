@@ -23,25 +23,42 @@ npm install -g @taigikeyboard/taigi
 Or run without installing:
 
 ```bash
-npx -p @taigikeyboard/taigi tai -f tl -t poj "peh8-oe7-ji7"
+npx -p @taigikeyboard/taigi tai tl poj "peh8-oe7-ji7"
 ```
 
 ## CLI
 
 ```
+tai <from> <to|mark|number> [--ascii] [text...]
 tai -f <system> -t <system> [--tone mark|number] [--ascii] [text...]
 ```
 
-Systems: `tl`, `poj`, `tps`. Input comes from arguments, or from stdin if none given.
+Systems: `tl`, `poj`, `tps`. The CLI also accepts common aliases like `tailo`, `tai-lo`, and `zhuyin`.
+Input comes from arguments, or from stdin if none given.
 
 ```bash
-tai -f tl -t poj "peh8-oe7-ji7"              # pe̍h-ōe-jī
-echo "tai5-gi2" | tai -f tl -t tps           # ㄉㄞˊ ㆣㄧˋ
-tai -f tl -t tl --tone number "pe̍h-ōe-jī"   # peh8-oe7-ji7
+tai tl poj "peh8-oe7-ji7"                   # pe̍h-ōe-jī
+echo "tai5-gi2" | tai tl tps                # ㄉㄞˊ ㆣㄧˋ
+tai tl number "pe̍h-uē-jī"                  # peh8-ue7-ji7
+tai poj mark "peh8-oe7-ji7"                 # pe̍h-ōe-jī
 tai -f poj -t poj --tone number --ascii "o͘-á"
 ```
 
-`--tone` applies when `--from` and `--to` are the same (TL or POJ). `--ascii` rewrites POJ `o͘`/`ⁿ` as `oo`/`nn`.
+Use `mark` or `number` as the second argument to convert tone format inside the same romanization system.
+`--tone`, `--mark`, and `--number` are also available when `--from` and `--to` are the same (TL or POJ).
+`--ascii` / `--poj-ascii` rewrites POJ `o͘`/`ⁿ` as `oo`/`nn`.
+
+### Stdin and files
+
+If no text argument is provided, `tai` reads UTF-8 text from stdin and writes the converted text to stdout.
+
+```bash
+echo "tai5-gi2" | tai tl tps
+tai tl poj < input.txt > output.txt
+cat input.txt | tai poj tl
+```
+
+Newlines are preserved, so `tai` can process multi-line files.
 
 ## API
 

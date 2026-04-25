@@ -39,6 +39,18 @@ describe("tai CLI", () => {
       strictEqual(code, 0);
       strictEqual(stdout, "pe̍h");
     });
+
+    it("positional systems", () => {
+      const { stdout, code } = run(["tl", "poj", "peh8-oe7-ji7"]);
+      strictEqual(code, 0);
+      strictEqual(stdout, "pe̍h-ōe-jī");
+    });
+
+    it("accepts zhuyin alias for tps", () => {
+      const { stdout, code } = run(["tl", "zhuyin", "tai5-gi2"]);
+      strictEqual(code, 0);
+      match(stdout, /ㄉㄞ/);
+    });
   });
 
   describe("stdin", () => {
@@ -79,6 +91,30 @@ describe("tai CLI", () => {
       strictEqual(code, 0);
       strictEqual(stdout, "pe̍h-ōe-jī");
     });
+
+    it("positional tone number target", () => {
+      const { stdout, code } = run(["tl", "number", "pe̍h-uē-jī"]);
+      strictEqual(code, 0);
+      strictEqual(stdout, "peh8-ue7-ji7");
+    });
+
+    it("positional tone mark target keeps POJ spelling", () => {
+      const { stdout, code } = run(["poj", "mark", "peh8-oe7-ji7"]);
+      strictEqual(code, 0);
+      strictEqual(stdout, "pe̍h-ōe-jī");
+    });
+
+    it("--number shortcut flag with positional system", () => {
+      const { stdout, code } = run(["tl", "--number", "pe̍h-uē-jī"]);
+      strictEqual(code, 0);
+      strictEqual(stdout, "peh8-ue7-ji7");
+    });
+
+    it("--mark shortcut flag with positional system", () => {
+      const { stdout, code } = run(["tl", "--mark", "peh8"]);
+      strictEqual(code, 0);
+      strictEqual(stdout, "pe̍h");
+    });
   });
 
   describe("--ascii", () => {
@@ -93,6 +129,12 @@ describe("tai CLI", () => {
       strictEqual(code, 0);
       match(stdout, /tâi/);
     });
+
+    it("--poj-ascii aliases --ascii", () => {
+      const { stdout, code } = run(["-f", "poj", "-t", "poj", "--tone", "number", "--poj-ascii", "o͘-á"]);
+      strictEqual(code, 0);
+      match(stdout, /oo/);
+    });
   });
 
   describe("errors", () => {
@@ -106,12 +148,6 @@ describe("tai CLI", () => {
       const { stderr, code } = run(["-f", "bogus", "-t", "poj", "text"]);
       strictEqual(code, 2);
       match(stderr, /unknown system 'bogus'/);
-    });
-
-    it("rejects zhuyin alias", () => {
-      const { stderr, code } = run(["-f", "zhuyin", "-t", "tl", "ㄉㄞˊ"]);
-      strictEqual(code, 2);
-      match(stderr, /unknown system 'zhuyin'/);
     });
 
     it("rejects --tone with different systems", () => {
@@ -130,6 +166,19 @@ describe("tai CLI", () => {
       const { stderr, code } = run(["-f", "tl", "-t", "tl", "--tone", "bogus", "tai5"]);
       strictEqual(code, 2);
       match(stderr, /invalid --tone/);
+    });
+
+    it("rejects conflicting tone shortcut flags", () => {
+      const { stderr, code } = run(["tl", "--mark", "--number", "tai5"]);
+      strictEqual(code, 2);
+      match(stderr, /choose only one tone format/);
+    });
+
+    it("rejects bare tone command without a system", () => {
+      const { stderr, code } = run(["number", "pe̍h-uē-jī"]);
+      strictEqual(code, 2);
+      match(stderr, /missing source system/);
+      match(stderr, /tai tl number/);
     });
   });
 

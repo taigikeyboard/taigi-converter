@@ -5,32 +5,50 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { convert, toToneMark, toToneNumber } from "../src/converter.js";
 
-const SYSTEM_ALIASES = { tl: "tl", poj: "poj", tps: "zhuyin" };
+const SYSTEM_ALIASES = {
+  tl: "tl",
+  tailo: "tl",
+  "tai-lo": "tl",
+  poj: "poj",
+  pehoeji: "poj",
+  "peh-oe-ji": "poj",
+  tps: "zhuyin",
+  zhuyin: "zhuyin",
+  bpmf: "zhuyin",
+  bopomofo: "zhuyin",
+  fangyin: "zhuyin",
+};
+const TONE_COMMANDS = new Set(["mark", "number"]);
 
-const HELP = `Usage: tai -f <system> -t <system> [options] [text...]
+const HELP = `Usage: tai <from> <to|mark|number> [options] [text...]
+  tai -f <system> -t <system> [options] [text...]
 
 Convert between Taiwanese phonetic systems.
 
 Systems:
-  tl          Tai-lo (Taiwanese Romanization System)
-  poj         Pe-oh-e-ji (Church Romanization)
-  tps         Taiwanese Phonetic Symbols (方音符號)
+  tl          Tai-lo (aliases: tailo, tai-lo)
+  poj         Pe-oh-e-ji (aliases: pehoeji, peh-oe-ji)
+  tps         Taiwanese Phonetic Symbols (aliases: zhuyin, bpmf, bopomofo, fangyin)
 
 Options:
-  -f, --from <system>    Source system (required)
-  -t, --to <system>      Target system (required)
+  -f, --from <system>    Source system
+  -t, --to <system>      Target system
       --tone <mark|number>
                          Tone format for output when --from equals --to
-      --ascii            Replace POJ o͘/ⁿ with oo/nn in output
+      --mark             Shortcut for --tone mark
+      --number           Shortcut for --tone number
+      --ascii, --poj-ascii
+                         Use oo/nn instead of POJ o͘/ⁿ in output
   -h, --help             Show this help
   -v, --version          Show version
 
 Input is taken from positional arguments, or from stdin if none given.
 
 Examples:
-  tai -f tl -t poj "pe̍h-ōe-jī"
-  echo "tai5-gi2" | tai -f tl -t tps
-  tai -f poj -t tl --tone number < input.txt > output.txt
+  tai tl poj "peh8-oe7-ji7"
+  echo "tai5-gi2" | tai tl tps
+  tai tl number "pe̍h-uē-jī"
+  tai poj mark "peh8-oe7-ji7"
   tai -f tl -t poj --ascii "o͘-á"
 `;
 
@@ -43,8 +61,12 @@ function fail(msg, code = 2) {
 function resolveSystem(name, flag) {
   if (!name) fail(`missing --${flag}`);
   const key = name.toLowerCase();
-  if (!(key in SYSTEM_ALIASES)) fail(`unknown system '${name}' for --${flag} (expected tl, poj, or tps)`);
+  if (!(key in SYSTEM_ALIASES)) fail(`unknown system '${name}' for --${flag} (expected tl, poj, tps, or zhuyin)`);
   return SYSTEM_ALIASES[key];
+}
+
+function isSystem(name) {
+  return Boolean(name) && name.toLowerCase() in SYSTEM_ALIASES;
 }
 
 function applyAscii(text) {
@@ -76,7 +98,10 @@ async function main() {
         from: { type: "string", short: "f" },
         to: { type: "string", short: "t" },
         tone: { type: "string" },
+        mark: { type: "boolean", default: false },
+        number: { type: "boolean", default: false },
         ascii: { type: "boolean", default: false },
+        "poj-ascii": { type: "boolean", default: false },
         help: { type: "boolean", short: "h", default: false },
         version: { type: "boolean", short: "v", default: false },
       },
@@ -98,22 +123,53 @@ async function main() {
     return;
   }
 
-  const from = resolveSystem(values.from, "from");
-  const to = resolveSystem(values.to, "to");
-
-  if (values.tone && !["mark", "number"].includes(values.tone)) {
-    fail(`invalid --tone '${values.tone}' (expected mark or number)`);
+  const args = [...positionals];
+  const toneFlags = [
+    values.tone,
+    values.mark ? "mark" : undefined,
+    values.number ? "number" : undefined,
+  ].filter(Boolean);
+  if (toneFlags.length > 1 && new Set(toneFlags).size > 1) {
+    fail(`choose only one tone format`);
   }
-  if (values.tone && from !== to) {
+  let tone = toneFlags[0];
+
+  let from;
+  let to;
+  if (!values.from && !values.to && args.length >= 2 && isSystem(args[0]) && TONE_COMMANDS.has(args[1].toLowerCase())) {
+    const positionalTone = args[1].toLowerCase();
+    if (tone && tone !== positionalTone) fail(`choose only one tone format`);
+    from = resolveSystem(args.shift(), "from");
+    args.shift();
+    to = from;
+    tone = positionalTone;
+  } else if (!values.from && !values.to && args.length >= 2 && isSystem(args[0]) && isSystem(args[1])) {
+    from = resolveSystem(args.shift(), "from");
+    to = resolveSystem(args.shift(), "to");
+  } else if (!values.from && !values.to && args.length >= 1 && isSystem(args[0]) && tone) {
+    from = resolveSystem(args.shift(), "from");
+    to = from;
+  } else if (!values.from && !values.to && args.length > 0 && TONE_COMMANDS.has(args[0].toLowerCase())) {
+    const command = args[0].toLowerCase();
+    fail(`missing source system before '${args[0]}' (try 'tai tl ${command} ...' or 'tai poj ${command} ...')`);
+  } else {
+    from = resolveSystem(values.from, "from");
+    to = resolveSystem(values.to, "to");
+  }
+
+  if (tone && !["mark", "number"].includes(tone)) {
+    fail(`invalid --tone '${tone}' (expected mark or number)`);
+  }
+  if (tone && from !== to) {
     fail(`--tone only applies when --from and --to are the same system`);
   }
-  if (values.tone && from === "zhuyin") {
+  if (tone && from === "zhuyin") {
     fail(`--tone does not apply to tps`);
   }
 
   let input;
-  if (positionals.length > 0) {
-    input = positionals.join(" ");
+  if (args.length > 0) {
+    input = args.join(" ");
   } else if (!process.stdin.isTTY) {
     input = await readStdin();
   } else {
@@ -123,9 +179,9 @@ async function main() {
   let output;
   try {
     if (from === to) {
-      if (values.tone === "number") {
+      if (tone === "number") {
         output = toToneNumber(input);
-      } else if (values.tone === "mark") {
+      } else if (tone === "mark") {
         output = toToneMark(input, from);
       } else {
         output = input;
@@ -137,7 +193,7 @@ async function main() {
     fail(err.message, 1);
   }
 
-  if (values.ascii) output = applyAscii(output);
+  if (values.ascii || values["poj-ascii"]) output = applyAscii(output);
 
   process.stdout.write(output);
 }
