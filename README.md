@@ -9,7 +9,7 @@ Bidirectional converter between Taiwanese phonetic systems: TL (Tai-lo), POJ (Pe
 
 ## Demo
 
-![taigi-cli demo](./assets/taigi-cli-demo.gif)
+![taigi-cli demo](https://raw.githubusercontent.com/taigikeyboard/taigi-converter/main/assets/taigi-cli-demo.gif)
 
 ## Features
 
