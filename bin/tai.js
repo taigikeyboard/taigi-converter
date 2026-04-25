@@ -18,9 +18,13 @@ const SYSTEM_ALIASES = {
   bopomofo: "zhuyin",
   fangyin: "zhuyin",
 };
-const TONE_COMMANDS = new Set(["mark", "number"]);
+const TONE_ALIASES = {
+  mark: "mark",
+  number: "number",
+  num: "number",
+};
 
-const HELP = `Usage: tai <from> <to|mark|number> [options] [text...]
+const HELP = `Usage: tai <from> <to|mark|number|num> [options] [text...]
   tai -f <system> -t <system> [options] [text...]
 
 Convert between Taiwanese phonetic systems.
@@ -33,10 +37,11 @@ Systems:
 Options:
   -f, --from <system>    Source system
   -t, --to <system>      Target system
-      --tone <mark|number>
+      --tone <mark|number|num>
                          Tone format for output when --from equals --to
       --mark             Shortcut for --tone mark
       --number           Shortcut for --tone number
+      --num              Alias for --number
       --ascii, --poj-ascii
                          Use oo/nn instead of POJ o͘/ⁿ in output
   -h, --help             Show this help
@@ -47,7 +52,7 @@ Input is taken from positional arguments, or from stdin if none given.
 Examples:
   tai tl poj "peh8-oe7-ji7"
   echo "tai5-gi2" | tai tl tps
-  tai tl number "pe̍h-uē-jī"
+  tai tl num "pe̍h-uē-jī"
   tai poj mark "peh8-oe7-ji7"
   tai -f tl -t poj --ascii "o͘-á"
 `;
@@ -67,6 +72,10 @@ function resolveSystem(name, flag) {
 
 function isSystem(name) {
   return Boolean(name) && name.toLowerCase() in SYSTEM_ALIASES;
+}
+
+function normalizeTone(name) {
+  return TONE_ALIASES[name?.toLowerCase()];
 }
 
 function applyAscii(text) {
@@ -100,6 +109,7 @@ async function main() {
         tone: { type: "string" },
         mark: { type: "boolean", default: false },
         number: { type: "boolean", default: false },
+        num: { type: "boolean", default: false },
         ascii: { type: "boolean", default: false },
         "poj-ascii": { type: "boolean", default: false },
         help: { type: "boolean", short: "h", default: false },
@@ -125,9 +135,10 @@ async function main() {
 
   const args = [...positionals];
   const toneFlags = [
-    values.tone,
+    values.tone ? normalizeTone(values.tone) || values.tone : undefined,
     values.mark ? "mark" : undefined,
     values.number ? "number" : undefined,
+    values.num ? "number" : undefined,
   ].filter(Boolean);
   if (toneFlags.length > 1 && new Set(toneFlags).size > 1) {
     fail(`choose only one tone format`);
@@ -136,8 +147,8 @@ async function main() {
 
   let from;
   let to;
-  if (!values.from && !values.to && args.length >= 2 && isSystem(args[0]) && TONE_COMMANDS.has(args[1].toLowerCase())) {
-    const positionalTone = args[1].toLowerCase();
+  if (!values.from && !values.to && args.length >= 2 && isSystem(args[0]) && normalizeTone(args[1])) {
+    const positionalTone = normalizeTone(args[1]);
     if (tone && tone !== positionalTone) fail(`choose only one tone format`);
     from = resolveSystem(args.shift(), "from");
     args.shift();
@@ -149,8 +160,8 @@ async function main() {
   } else if (!values.from && !values.to && args.length >= 1 && isSystem(args[0]) && tone) {
     from = resolveSystem(args.shift(), "from");
     to = from;
-  } else if (!values.from && !values.to && args.length > 0 && TONE_COMMANDS.has(args[0].toLowerCase())) {
-    const command = args[0].toLowerCase();
+  } else if (!values.from && !values.to && args.length > 0 && normalizeTone(args[0])) {
+    const command = args[0];
     fail(`missing source system before '${args[0]}' (try 'tai tl ${command} ...' or 'tai poj ${command} ...')`);
   } else {
     from = resolveSystem(values.from, "from");
@@ -158,7 +169,7 @@ async function main() {
   }
 
   if (tone && !["mark", "number"].includes(tone)) {
-    fail(`invalid --tone '${tone}' (expected mark or number)`);
+    fail(`invalid --tone '${tone}' (expected mark, number, or num)`);
   }
   if (tone && from !== to) {
     fail(`--tone only applies when --from and --to are the same system`);

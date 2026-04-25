@@ -1,6 +1,6 @@
 {
   "name": "@taigikeyboard/taigi-cli",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Bidirectional converter between Taiwanese phonetic systems: TL (Tai-lo), POJ (Pe-oh-e-ji), and TPS (方音符號), with tone mark / tone number conversion",
   "type": "module",
   "exports": {
@@ -21,10 +21,10 @@
   "keywords": [
     "taigi",
     "taiwanese",
-    "tailo",
-    "tai-lo",
+    "tl",
+    "tâi-lô",
     "poj",
-    "pe-oh-e-ji",
+    "pe̍h-ōe-jī",
     "tps",
     "phonetic",
     "converter",

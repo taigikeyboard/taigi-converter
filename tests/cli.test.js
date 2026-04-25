@@ -104,6 +104,12 @@ describe("tai CLI", () => {
       strictEqual(stdout, "peh8-ue7-ji7\n");
     });
 
+    it("positional tone num aliases number", () => {
+      const { stdout, code } = run(["tl", "num", "pe̍h-uē-jī"]);
+      strictEqual(code, 0);
+      strictEqual(stdout, "peh8-ue7-ji7\n");
+    });
+
     it("positional tone mark target keeps POJ spelling", () => {
       const { stdout, code } = run(["poj", "mark", "peh8-oe7-ji7"]);
       strictEqual(code, 0);
@@ -112,6 +118,18 @@ describe("tai CLI", () => {
 
     it("--number shortcut flag with positional system", () => {
       const { stdout, code } = run(["tl", "--number", "pe̍h-uē-jī"]);
+      strictEqual(code, 0);
+      strictEqual(stdout, "peh8-ue7-ji7\n");
+    });
+
+    it("--num shortcut flag aliases --number", () => {
+      const { stdout, code } = run(["tl", "--num", "pe̍h-uē-jī"]);
+      strictEqual(code, 0);
+      strictEqual(stdout, "peh8-ue7-ji7\n");
+    });
+
+    it("--tone num aliases --tone number", () => {
+      const { stdout, code } = run(["-f", "tl", "-t", "tl", "--tone", "num", "pe̍h-uē-jī"]);
       strictEqual(code, 0);
       strictEqual(stdout, "peh8-ue7-ji7\n");
     });
