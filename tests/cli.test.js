@@ -19,13 +19,13 @@ describe("tai CLI", () => {
     it("tl -> poj via argv", () => {
       const { stdout, code } = run(["-f", "tl", "-t", "poj", "peh8-oe7-ji7"]);
       strictEqual(code, 0);
-      strictEqual(stdout, "pe̍h-ōe-jī");
+      strictEqual(stdout, "pe̍h-ōe-jī\n");
     });
 
     it("poj -> tl via argv", () => {
       const { stdout, code } = run(["-f", "poj", "-t", "tl", "chhiu-a"]);
       strictEqual(code, 0);
-      strictEqual(stdout, "tshiu-a");
+      strictEqual(stdout, "tshiu-a\n");
     });
 
     it("tl -> tps via argv", () => {
@@ -37,13 +37,13 @@ describe("tai CLI", () => {
     it("long flags", () => {
       const { stdout, code } = run(["--from", "tl", "--to", "poj", "peh8"]);
       strictEqual(code, 0);
-      strictEqual(stdout, "pe̍h");
+      strictEqual(stdout, "pe̍h\n");
     });
 
     it("positional systems", () => {
       const { stdout, code } = run(["tl", "poj", "peh8-oe7-ji7"]);
       strictEqual(code, 0);
-      strictEqual(stdout, "pe̍h-ōe-jī");
+      strictEqual(stdout, "pe̍h-ōe-jī\n");
     });
 
     it("accepts zhuyin alias for tps", () => {
@@ -56,6 +56,12 @@ describe("tai CLI", () => {
   describe("stdin", () => {
     it("reads stdin when no positional args", () => {
       const { stdout, code } = run(["-f", "tl", "-t", "poj"], { input: "peh8" });
+      strictEqual(code, 0);
+      strictEqual(stdout, "pe̍h");
+    });
+
+    it("does not add a newline to stdin input", () => {
+      const { stdout, code } = run(["tl", "poj"], { input: "peh8" });
       strictEqual(code, 0);
       strictEqual(stdout, "pe̍h");
     });
@@ -77,43 +83,43 @@ describe("tai CLI", () => {
     it("tl -> tl tone number", () => {
       const { stdout, code } = run(["-f", "tl", "-t", "tl", "--tone", "number", "pe̍h-ōe-jī"]);
       strictEqual(code, 0);
-      strictEqual(stdout, "peh8-oe7-ji7");
+      strictEqual(stdout, "peh8-oe7-ji7\n");
     });
 
     it("tl -> tl tone mark", () => {
       const { stdout, code } = run(["-f", "tl", "-t", "tl", "--tone", "mark", "peh8-ji7"]);
       strictEqual(code, 0);
-      strictEqual(stdout, "pe̍h-jī");
+      strictEqual(stdout, "pe̍h-jī\n");
     });
 
     it("poj -> poj tone mark", () => {
       const { stdout, code } = run(["-f", "poj", "-t", "poj", "--tone", "mark", "peh8-oe7-ji7"]);
       strictEqual(code, 0);
-      strictEqual(stdout, "pe̍h-ōe-jī");
+      strictEqual(stdout, "pe̍h-ōe-jī\n");
     });
 
     it("positional tone number target", () => {
       const { stdout, code } = run(["tl", "number", "pe̍h-uē-jī"]);
       strictEqual(code, 0);
-      strictEqual(stdout, "peh8-ue7-ji7");
+      strictEqual(stdout, "peh8-ue7-ji7\n");
     });
 
     it("positional tone mark target keeps POJ spelling", () => {
       const { stdout, code } = run(["poj", "mark", "peh8-oe7-ji7"]);
       strictEqual(code, 0);
-      strictEqual(stdout, "pe̍h-ōe-jī");
+      strictEqual(stdout, "pe̍h-ōe-jī\n");
     });
 
     it("--number shortcut flag with positional system", () => {
       const { stdout, code } = run(["tl", "--number", "pe̍h-uē-jī"]);
       strictEqual(code, 0);
-      strictEqual(stdout, "peh8-ue7-ji7");
+      strictEqual(stdout, "peh8-ue7-ji7\n");
     });
 
     it("--mark shortcut flag with positional system", () => {
       const { stdout, code } = run(["tl", "--mark", "peh8"]);
       strictEqual(code, 0);
-      strictEqual(stdout, "pe̍h");
+      strictEqual(stdout, "pe̍h\n");
     });
   });
 

@@ -168,8 +168,10 @@ async function main() {
   }
 
   let input;
+  let inputFromArgs = false;
   if (args.length > 0) {
     input = args.join(" ");
+    inputFromArgs = true;
   } else if (!process.stdin.isTTY) {
     input = await readStdin();
   } else {
@@ -194,6 +196,7 @@ async function main() {
   }
 
   if (values.ascii || values["poj-ascii"]) output = applyAscii(output);
+  if (inputFromArgs && output && !output.endsWith("\n")) output += "\n";
 
   process.stdout.write(output);
 }
