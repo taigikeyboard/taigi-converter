@@ -28,7 +28,13 @@
       "Bash(git -C /Users/alexsu/Workspace/taigi-converter diff)",
       "Bash(git -C /Users/alexsu/Workspace/taigi-converter log --oneline -3)",
       "Bash(git -C /Users/alexsu/Workspace/taigi-converter add src/segmenter.js tests/segmenter.test.js)",
-      "Bash(git -C:*)"
+      "Bash(git -C:*)",
+      "Bash(/Users/alexsu/Workspace/taigi-converter/bin/taigi.js --help)",
+      "Bash(/Users/alexsu/Workspace/taigi-converter/bin/taigi.js --version)",
+      "Bash(/Users/alexsu/Workspace/taigi-converter/bin/tai.js --help)",
+      "Bash(/Users/alexsu/Workspace/taigi-converter/bin/tai.js -f tl -t poj \"peh8-oe7-ji7\")",
+      "Bash(/Users/alexsu/Workspace/taigi-converter/bin/tai.js -f bogus -t tl \"x\")",
+      "Bash(echo \"exit=$?\")"
     ]
   }
 }
