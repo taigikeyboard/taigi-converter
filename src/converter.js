@@ -6,10 +6,23 @@ import { segmentWords } from "./segmenter.js";
 
 const SYSTEMS = new Set(["tl", "poj", "zhuyin"]);
 
+// Match TL/POJ syllables in NFC. Class covers:
+//   - ASCII A-Za-z
+//   - Latin-1 Supplement U+00C0-U+00FF (lower + UPPER precomposed acute/grave/
+//     circumflex on a/e/i/o/u — `á à â ê é è í ì î ó ò ô ú ù û` and uppers)
+//   - Latin Extended-A U+0100-U+017F (macrons + breves on a/e/i/o/u —
+//     `ā ē ī ō ū` and `ă ĕ ĭ ŏ ŭ` POJ tone 9 plus uppers)
+//   - Latin Extended-B U+01CD-U+01DC (carons `ǎ ě ǐ ǒ ǔ` for tone 6 plus uppers)
+//   - Combining diacritics U+0300-U+036F (acute/grave/circumflex/macron/caron/
+//     breve/double-acute/vertical-line/combining-dot — covers all decomposed
+//     forms inc. tone 8 U+030D, TL tone 9 U+030B, combining `oo` dot U+0358)
+//   - POJ nasal markers ⁿ (U+207F) and ᴺ (U+1D3A)
+// The earlier narrower class missed UPPERCASE precomposed + several lowercase
+// forms (`í û ǐ ǒ ǔ ă`), causing `convert` to silently bypass valid inputs
+// like `Ká` or `kă`.
 const SYLLABLE_RE = new RegExp(
-  "([A-Za-z\\u0300-\\u030d\\u030b\\u0306\\u0358\\u207f\\u1d3a" +
-  "\\u00e1\\u00e0\\u00e2\\u00ea\\u00e9\\u00e8\\u00f3\\u00f2\\u00f4\\u00fa\\u00f9\\u00ec\\u00ee" +
-  "\\u0101\\u0113\\u012b\\u014d\\u016b\\u01ce\\u011b\\u030d" +
+  "([A-Za-z\\u00C0-\\u00FF\\u0100-\\u017F\\u01CD-\\u01DC" +
+  "\\u0300-\\u036F\\u207F\\u1D3A" +
   "]+[0-9]?)", "g"
 );
 

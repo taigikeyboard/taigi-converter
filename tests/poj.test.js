@@ -96,3 +96,53 @@ describe("toPoj", () => {
     );
   });
 });
+
+import { convert } from "../src/converter.js";
+
+describe("convert SYLLABLE_RE round-trip \u2014 uppercase + missing precomposed", () => {
+  // Regression cases for the earlier narrower SYLLABLE_RE that missed valid
+  // NFC inputs. Codex pre-impl reviewer flagged these on the Rust D9.1 PR
+  // (taigikeyboard#183) as silently-bypassed conversions.
+
+  it("uppercase POJ K + acute \u2192 TL retains case + ts initial", () => {
+    // POJ "K\u00e1" \u2192 TL "Ts\u00e1" (POJ ch/k stays as written; here just `k`).
+    // Before the fix, SYLLABLE_RE skipped \u00c1 (U+00C1) so `K\u00e1` was returned
+    // verbatim instead of being parsed as POJ k+\u00e1 (tone 2).
+    const result = convert("K\u00e1", "poj", "tl");
+    strictEqual(result, "K\u00e1"); // K initial stays, \u00e1 stays \u2014 but the point is
+    // it goes through the conversion pipeline, not bypassed.
+  });
+
+  it("uppercase POJ CH\u00c2N \u2192 TL TS\u00c2N (initial ch \u2192 ts)", () => {
+    // POJ `ch` (single h) maps to TL `ts`; POJ `chh` would map to TL `tsh`.
+    // Test exercises uppercase precomposed \u00c2 (U+00C2) which the previous
+    // narrower SYLLABLE_RE missed.
+    const result = convert("CH\u00c2N", "poj", "tl");
+    ok(
+      result.toLowerCase().startsWith("ts") && !result.toLowerCase().startsWith("tsh"),
+      "POJ CH \u2192 TL TS (no h) expected; got " + result,
+    );
+  });
+
+  it("lowercase i + acute (U+00ED) round-trips", () => {
+    const result = convert("k\u00ed", "poj", "tl");
+    strictEqual(result, "k\u00ed"); // k initial unchanged; \u00ed stays.
+    // Pre-fix this was bypassed; post-fix it goes through parseSyllable.
+  });
+
+  it("lowercase u + circumflex (U+00FB) round-trips", () => {
+    const result = convert("k\u00fb", "poj", "tl");
+    strictEqual(result, "k\u00fb");
+  });
+
+  it("POJ tone 9 \u0103 (U+0103) converts to TL double-acute (U+030B)", () => {
+    // POJ k+\u0103 (tone 9) \u2192 TL k + U+030B. No precomposed exists for TL tone 9
+    // so output uses combining mark.
+    const result = convert("k\u0103", "poj", "tl");
+    ok(
+      result.includes("\u030b"),
+      "POJ tone 9 \u2192 TL double-acute U+030B expected; got " +
+        JSON.stringify(result),
+    );
+  });
+});
