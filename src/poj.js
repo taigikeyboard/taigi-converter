@@ -37,11 +37,14 @@ function placePojToneMark(final, mark) {
       target = first;
     } else if (final.length === 2) {
       target = first;
-    } else if (final.endsWith("\u207f") && !final.endsWith("h\u207f")) {
+    } else if (
+      (final.endsWith("\u207f") || final.endsWith("\u1d3a"))
+      && !final.endsWith("h\u207f") && !final.endsWith("h\u1d3a")
+    ) {
       target = first;
     } else {
       const suffix = final.slice(start + 2);
-      if (suffix && "nmgptkh\u207f".includes(suffix[0])) {
+      if (suffix && "nmgptkh\u207f\u1d3a".includes(suffix[0])) {
         target = second;
       } else {
         target = first;

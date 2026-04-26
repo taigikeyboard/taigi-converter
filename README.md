@@ -5,7 +5,7 @@
 [![node](https://img.shields.io/node/v/@taigikeyboard/taigi-cli.svg)](https://nodejs.org)
 [![license](https://img.shields.io/npm/l/@taigikeyboard/taigi-cli.svg)](./LICENSE)
 
-Bidirectional converter between Taiwanese phonetic systems: TL (Tai-lo), POJ (Pe-oh-e-ji), and TPS (方音符號), with tone mark / tone number conversion.
+Bidirectional converter between Taiwanese phonetic systems: Tâi-lô (TL), Pe̍h-ōe-jī (POJ), and Taiwanese Phonetic Symbols (TPS), with tone mark / tone number conversion.
 
 ## Demo
 

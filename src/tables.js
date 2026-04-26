@@ -20,10 +20,10 @@ export const TL_FINALS = new Set([
   "uai", "uaih", "uainn", "uainnh",
   "m", "mh", "ng", "ngh",
   "ioo", "iooh", "iai", "iaih",
-  "er", "erh", "erm", "ere", "ereh", "eng",
-  "ir", "irh", "irp", "irt", "irk", "irm", "irn", "irng", "irinn", "ie",
+  "er", "erh", "erk", "erm", "ere", "ereh", "eng",
+  "ir", "irh", "irp", "irt", "irk", "irm", "irn", "irng", "iri", "irinn", "ie",
   "or", "orh", "ior", "iorh",
-  "uang", "oi", "oih", "ee"
+  "uang", "oi", "oih", "ee", "eeh"
 ]);
 
 export const TONE_NUM_TO_COMBINING = {
