@@ -181,4 +181,30 @@ describe("parseSyllable", () => {
   it("invalid syllable", () => {
     throws(() => parseSyllable("xyz"), /Cannot parse syllable/);
   });
+
+  // Special / dialectal finals — see knowledge/taigi-phonetics-reference.md §3.2.6.
+  // Pattern siblings: irinn / irk / irp / irt / irm already in TL_FINALS;
+  // er / erh / erm / ere / ereh already present; ee already present.
+  // iri / erk / eeh follow the same dialectal pattern (non-nasalized iri form,
+  // entering-tone variant of er, entering-tone variant of ee).
+  it("special final iri", () => {
+    const [initial, final, tone] = parseSyllable("iri1");
+    strictEqual(initial, "");
+    strictEqual(final, "iri");
+    strictEqual(tone, "1");
+  });
+
+  it("special final erk (stop tone inferred)", () => {
+    const [initial, final, tone] = parseSyllable("kerk");
+    strictEqual(initial, "k");
+    strictEqual(final, "erk");
+    strictEqual(tone, "4");
+  });
+
+  it("special final eeh (stop tone inferred)", () => {
+    const [initial, final, tone] = parseSyllable("keeh");
+    strictEqual(initial, "k");
+    strictEqual(final, "eeh");
+    strictEqual(tone, "4");
+  });
 });
