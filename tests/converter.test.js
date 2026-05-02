@@ -93,6 +93,16 @@ describe("TailoTpsConverter multiline", () => {
 describe("convert API", () => {
   it("tl to poj basic", () => ok(convert("tshi\u016b-\u00e1", "tl", "poj").includes("chh")));
   it("poj to tl basic", () => ok(convert("chhi\u016b-\u00e1", "poj", "tl").includes("tsh")));
+
+  it("tl to poj with n+grave U+01F9 (\u01f9)", () => strictEqual(convert("ts\u01f9g", "tl", "poj"), "ch\u01f9g"));
+  it("tl to poj title-case (Ts\u01f9g) preserves capitalization", () => strictEqual(convert("Ts\u01f9g", "tl", "poj"), "Ch\u01f9g"));
+  it("tl to poj all-uppercase with N+grave U+01F8 (TS\u01f8G)", () => strictEqual(convert("TS\u01f8G", "tl", "poj"), "CH\u01f8G"));
+  it("tl to poj aspirated n+grave (tsh\u01f9g)", () => strictEqual(convert("tsh\u01f9g", "tl", "poj"), "chh\u01f9g"));
+  it("poj to tl roundtrip n+grave", () => strictEqual(convert("ch\u01f9g", "poj", "tl"), "ts\u01f9g"));
+  it("standalone \u01f9g passthrough (same in tl and poj)", () => strictEqual(convert("\u01f9g", "tl", "poj"), "\u01f9g"));
+  it("mixed-script preserves hanzi (\u6211\u662f ts\u00ed)", () => strictEqual(convert("\u6211\u662f ts\u00ed", "tl", "poj"), "\u6211\u662f ch\u00ed"));
+  it("mixed-script with hanzi and ts\u01f9g", () => strictEqual(convert("\u7b97 ts\u01f9g", "tl", "poj"), "\u7b97 ch\u01f9g"));
+  it("zhuyin block left untouched in tl-to-poj", () => strictEqual(convert("\u310d\u311a\u02cb ts\u00ed", "tl", "poj"), "\u310d\u311a\u02cb ch\u00ed"));
   it("tl to zhuyin", () => ok(convert("tshiu7 a2", "tl", "zhuyin").includes("\u3111\u3127\u3128\u02eb")));
   it("same system passthrough", () => strictEqual(convert("hello", "tl", "tl"), "hello"));
   it("unknown source", () => throws(() => convert("hello", "xyz", "tl"), /Unknown source/));
