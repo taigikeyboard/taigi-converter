@@ -142,6 +142,9 @@ export function toZhuyin(text, { encodeSafe = false } = {}) {
 
   for (const [tailo, tps] of ZHUYIN_INITIALS) {
     if (remaining.startsWith(tailo)) {
+      if (tailo.endsWith("i") && remaining[tailo.length] === "r") {
+        continue;
+      }
       consonant = tps;
       remaining = remaining.slice(tailo.length);
       break;
