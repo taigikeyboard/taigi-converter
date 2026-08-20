@@ -229,6 +229,27 @@ describe("issue #4 tone-marked TL to POJ regressions", () => {
   }
 });
 
+describe("tone mark placement keeps er/ir digraph intact (ere, ereh, irinn finals)", () => {
+  const cases = [
+    ["pere",
+      "pere peré perè pere perê perě perē pere̍ pere̋",
+      "pere peré perè pere perê perě perē pere̍ perĕ"],
+    ["pereh",
+      "pereh peréh perèh pereh perêh perěh perēh pere̍h pere̋h",
+      "pereh peréh perèh pereh perêh perěh perēh pere̍h perĕh"],
+    ["pirinn",
+      "pirinn pirínn pirìnn pirinn pirînn pirǐnn pirīnn piri̍nn piri̋nn",
+      "piriⁿ piríⁿ pirìⁿ piriⁿ pirîⁿ pirǐⁿ pirīⁿ piri̍ⁿ pirĭⁿ"]
+  ];
+  for (const [syllable, marked, poj] of cases) {
+    it(`${syllable} tones 1-9`, () => {
+      const numbered = Array.from({ length: 9 }, (_, i) => syllable + (i + 1)).join(" ");
+      strictEqual(toToneMark(numbered, "tl"), marked);
+      strictEqual(convert(marked, "tl", "poj"), poj);
+    });
+  }
+});
+
 describe("toToneNumber", () => {
   it("basic", () => strictEqual(toToneNumber("k\u00e1"), "ka2"));
   it("tone 5", () => strictEqual(toToneNumber("k\u00e2"), "ka5"));
