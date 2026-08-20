@@ -172,6 +172,63 @@ describe("convert API", () => {
   it("title case nasalization stays lowercase", () => ok(convert("Piann", "tl", "poj").includes("\u207f")));
 });
 
+describe("issue #4 tone-marked TL to POJ regressions", () => {
+  const cases = [
+    ["inn",
+      "inn ínn ìnn inn înn ǐnn īnn i̍nn i̋nn",
+      "iⁿ íⁿ ìⁿ iⁿ îⁿ ǐⁿ īⁿ i̍ⁿ ĭⁿ"],
+    ["iunn",
+      "iunn iúnn iùnn iunn iûnn iǔnn iūnn iu̍nn iűnn",
+      "iuⁿ iúⁿ iùⁿ iuⁿ iûⁿ iǔⁿ iūⁿ iu̍ⁿ iŭⁿ"],
+    ["ing",
+      "ing íng ìng ing îng ǐng īng i̍ng i̋ng",
+      "eng éng èng eng êng ěng ēng e̍ng ĕng"],
+    ["oo",
+      "oo óo òo oo ôo ǒo ōo o̍o őo",
+      "o͘ ó͘ ò͘ o͘ ô͘ ǒ͘ ō͘ o̍͘ ŏ͘"],
+    ["Oo",
+      "Oo Óo Òo Oo Ôo Ǒo Ōo O̍o Őo",
+      "O͘ Ó͘ Ò͘ O͘ Ô͘ Ǒ͘ Ō͘ O̍͘ Ŏ͘"],
+    ["OO",
+      "OO ÓO ÒO OO ÔO ǑO ŌO O̍O ŐO",
+      "O͘ Ó͘ Ò͘ O͘ Ô͘ Ǒ͘ Ō͘ O̍͘ Ŏ͘"],
+    ["sui",
+      "sui suí suì sui suî suǐ suī sui̍ sui̋",
+      "sui súi sùi sui sûi sǔi sūi su̍i sŭi"],
+    ["tsi",
+      "tsi tsí tsì tsi tsî tsǐ tsī tsi̍ tsi̋",
+      "chi chí chì chi chî chǐ chī chi̍ chĭ"],
+    ["tso",
+      "tso tsó tsò tso tsô tsǒ tsō tso̍ tső",
+      "cho chó chò cho chô chǒ chō cho̍ chŏ"],
+    ["tsu",
+      "tsu tsú tsù tsu tsû tsǔ tsū tsu̍ tsű",
+      "chu chú chù chu chû chǔ chū chu̍ chŭ"],
+    ["tshi",
+      "tshi tshí tshì tshi tshî tshǐ tshī tshi̍ tshi̋",
+      "chhi chhí chhì chhi chhî chhǐ chhī chhi̍ chhĭ"],
+    ["tsho",
+      "tsho tshó tshò tsho tshô tshǒ tshō tsho̍ tshő",
+      "chho chhó chhò chho chhô chhǒ chhō chho̍ chhŏ"],
+    ["tshu",
+      "tshu tshú tshù tshu tshû tshǔ tshū tshu̍ tshű",
+      "chhu chhú chhù chhu chhû chhǔ chhū chhu̍ chhŭ"],
+    ["tsng",
+      "tsng tsńg tsǹg tsng tsn̂g tsňg tsn̄g tsn̍g tsn̋g",
+      "chng chńg chǹg chng chn̂g chňg chn̄g chn̍g chn̆g"],
+    ["tshng",
+      "tshng tshńg tshǹg tshng tshn̂g tshňg tshn̄g tshn̍g tshn̋g",
+      "chhng chhńg chhǹg chhng chhn̂g chhňg chhn̄g chhn̍g chhn̆g"]
+  ];
+  for (const [syllable, marked, poj] of cases) {
+    it(`${syllable} tones 1-9`, () => {
+      const numbered = Array.from({ length: 9 }, (_, i) => syllable + (i + 1)).join(" ");
+      strictEqual(toToneMark(numbered, "tl"), marked);
+      strictEqual(convert(marked, "tl", "poj"), poj);
+    });
+  }
+});
+
 describe("toToneNumber", () => {
   it("basic", () => strictEqual(toToneNumber("k\u00e1"), "ka2"));
   it("tone 5", () => strictEqual(toToneNumber("k\u00e2"), "ka5"));
