@@ -34,7 +34,9 @@
       "Bash(/Users/alexsu/Workspace/taigi-converter/bin/tai.js --help)",
       "Bash(/Users/alexsu/Workspace/taigi-converter/bin/tai.js -f tl -t poj \"peh8-oe7-ji7\")",
       "Bash(/Users/alexsu/Workspace/taigi-converter/bin/tai.js -f bogus -t tl \"x\")",
-      "Bash(echo \"exit=$?\")"
+      "Bash(echo \"exit=$?\")",
+      "WebFetch(domain:class.kh.edu.tw)",
+      "Bash(git worktree *)"
     ]
   }
 }

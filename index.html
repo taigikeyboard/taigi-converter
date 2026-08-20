@@ -4,24 +4,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>台語羅馬字、方音符號通用轉換器</title>
-  <meta name="description" content="線上即時轉換教育部台語羅馬字（TL）、白話字（POJ）、方音符號（TPS）、聲調數字。支援聲調符號與數字互轉，輸入即顯示所有格式結果。">
+  <title>台語羅馬字、方音符號、台語點字通用轉換器</title>
+  <meta name="description" content="線上即時轉換教育部台語羅馬字（TL）、白話字（POJ）、方音符號（TPS）、點字、聲調數字。支援聲調符號與數字互轉，輸入即顯示所有格式結果。">
   <link rel="canonical" href="https://taigikeyboard.tw/">
-  <meta property="og:title" content="台語羅馬字、方音符號通用轉換器">
-  <meta property="og:description" content="線上即時轉換教育部台語羅馬字（TL）、白話字（POJ）、方音符號（TPS）、聲調數字。支援聲調符號與數字互轉，輸入即顯示所有格式結果。">
+  <meta property="og:title" content="台語羅馬字、方音符號、點字通用轉換器">
+  <meta property="og:description" content="線上即時轉換教育部台語羅馬字（TL）、白話字（POJ）、方音符號（TPS）、點字、聲調數字。支援聲調符號與數字互轉，輸入即顯示所有格式結果。">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://taigikeyboard.tw/">
   <meta property="og:locale" content="zh_TW">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="台語羅馬字、方音符號通用轉換器">
-  <meta name="twitter:description" content="線上即時轉換教育部台語羅馬字（TL）、白話字（POJ）、方音符號（TPS）、聲調數字。支援聲調符號與數字互轉。">
+  <meta name="twitter:title" content="台語羅馬字、方音符號、點字通用轉換器">
+  <meta name="twitter:description" content="線上即時轉換教育部台語羅馬字（TL）、白話字（POJ）、方音符號（TPS）、點字、聲調數字。支援聲調符號與數字互轉。">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "台語羅馬字、方音符號通用轉換器",
+    "name": "台語羅馬字、方音符號、點字通用轉換器",
     "url": "https://taigikeyboard.tw/",
-    "description": "線上即時轉換教育部台語羅馬字（TL）、白話字（POJ）、方音符號（TPS）、聲調數字。",
+    "description": "線上即時轉換教育部台語羅馬字（TL）、白話字（POJ）、方音符號（TPS）、點字、聲調數字。",
     "applicationCategory": "UtilitiesApplication",
     "operatingSystem": "All",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "TWD" },
@@ -223,7 +223,7 @@
 </head>
 
 <body>
-  <h1>台語羅馬字、方音符號通用轉換器</h1>
+  <h1>台語羅馬字、方音符號、點字通用轉換器</h1>
   <p class="subtitle">羅馬字轉方音符號、方音符號轉羅馬字、羅馬字互相轉、聲調數字轉換</p>
   <div class="card">
     <textarea id="input" placeholder="Tī chia phah-jī"></textarea>
@@ -256,12 +256,18 @@
         <div class="result-label">方音符號</div>
         <div class="result-value placeholder" id="out-tps">見本: ㄏㆦ˫ ㄙㄨㆩ˪ ㄗㄚㆵ</div>
       </div>
+      <div class="result-row">
+        <div class="result-label">台語點字</div>
+        <div class="result-value placeholder" id="out-braille">見本: ⠓⠪⠒⠠⠎⠺⠄⠡⠧⠢</div>
+      </div>
     </div>
   </div>
   <ol class="notes">
     <li>台羅正式版、傳統版差佇 oo → o͘, nn → ⁿ 轉換。</li>
     <li>白話字聲調數字 (ASCII) 是採用 ASCII 標準化，o͘ , ⁿ 轉成 oo, nn。</li>
     <li>台羅轉換參考<a href="https://language.moe.gov.tw/uploads/files/17579930721182.pdf">教育部拼音手冊</a>。</li>
+    <li>台語點字參考<a href="https://zh.wikipedia.org/zh-hant/%E5%8F%B0%E8%AA%9E%E9%BB%9E%E5%AD%97">維基百科</a>佮<a
+        href="https://class.kh.edu.tw/19061/bulletin/msg_view/836">臺語點字對照表</a>。</li>
     <li>問題反應：info@taigikeyboard.tw。</li>
   </ol>
 
@@ -282,6 +288,7 @@
       pojNum: document.getElementById("out-poj-num"),
       pojNumNonAscii: document.getElementById("out-poj-num-non-ascii"),
       tps: document.getElementById("out-tps"),
+      braille: document.getElementById("out-braille"),
     };
 
     const placeholders = {
@@ -293,6 +300,7 @@
       pojNum: "見本: lak8-goeh8-tang1",
       pojNumNonAscii: "見本: lak8-goe͘h8-tang1",
       tps: "見本: ㄌㄚㆻ̇ ㆣㄨㆤㆷ̇ ㄉㄤ",
+      braille: "見本: ⠇⠭⠔⠛⠫⠔⠙⠭⠤",
     };
 
     function setResult(key, value) {
@@ -336,6 +344,9 @@
       let tps = "";
       try { tps = convert(tlMarks, "tl", "zhuyin"); } catch { }
 
+      let braille = "";
+      try { braille = convert(tlMarks, "tl", "braille"); } catch { }
+
       const toTrad = (s) => s.normalize("NFD").replace(/nn/gi, (m) => /^[A-Z]/.test(m) ? "\u1d3a" : "\u207f").replace(/o([\u0301\u0300\u0302\u030c\u0304\u030d\u0306]?)o/g, "o$1\u0358").normalize("NFC");
       const tlTrad = toTrad(tlMarks);
 
@@ -346,6 +357,7 @@
       setResult("pojNum", pojNum);
       setResult("pojNumNonAscii", pojNumRaw);
       setResult("tps", tps);
+      setResult("braille", braille);
     }
 
     inputEl.addEventListener("input", update);
