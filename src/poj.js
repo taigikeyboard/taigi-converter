@@ -25,6 +25,12 @@ function placePojToneMark(final, mark) {
   if (/iau|oai/.test(final)) {
     return final.replace("a", "a" + mark);
   }
+  if (final.includes("ere")) {
+    return final.replace("ere", "ere" + mark);
+  }
+  if (final.includes("iri")) {
+    return final.replace("iri", "iri" + mark);
+  }
   const vowelsMatch = final.match(/[aeiou]{2}/);
   if (vowelsMatch) {
     const start = vowelsMatch.index;

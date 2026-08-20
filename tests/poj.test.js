@@ -41,6 +41,11 @@ describe("toPoj", () => {
     strictEqual(toPoj("h", "a", "2"), "h\u00e1");
   });
 
+  it("ere mark on trailing e", () => strictEqual(toPoj("p", "ere", "5"), "per\u00ea"));
+  it("ereh mark on trailing e", () => strictEqual(toPoj("p", "ereh", "8"), "pere\u030dh"));
+  it("iri mark on trailing i", () => strictEqual(toPoj("p", "iri", "5"), "pir\u00ee"));
+  it("irinn mark on trailing i", () => strictEqual(toPoj("p", "irinn", "5"), "pir\u00ee\u207f"));
+
   it("triphthong iau mark on a", () => ok(toPoj("", "iau", "5").includes("\u00e2")));
   it("diphthong ai mark on first", () => strictEqual(toPoj("k", "ai", "2"), "k\u00e1i"));
 
