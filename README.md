@@ -5,7 +5,7 @@
 [![node](https://img.shields.io/node/v/@taigikeyboard/taigi-cli.svg)](https://nodejs.org)
 [![license](https://img.shields.io/npm/l/@taigikeyboard/taigi-cli.svg)](./LICENSE)
 
-Bidirectional converter between Taiwanese phonetic systems: Tâi-lô (TL), Pe̍h-ōe-jī (POJ), and Taiwanese Phonetic Symbols (TPS), with tone mark / tone number conversion.
+Bidirectional converter between Taiwanese phonetic systems: Tâi-lô (TL), Pe̍h-ōe-jī (POJ), Taiwanese Phonetic Symbols (TPS), and Taiwanese braille, with tone mark / tone number conversion.
 
 ## Demo
 
@@ -13,7 +13,7 @@ Bidirectional converter between Taiwanese phonetic systems: Tâi-lô (TL), Pe̍h
 
 ## Features
 
-- Convert between TL, POJ, and TPS
+- Convert between TL, POJ, TPS, and Taiwanese braille
 - Tone mark ↔ tone number conversion
 - Handles mixed text with punctuation and hyphens
 - Preserves letter casing
@@ -75,6 +75,8 @@ import { convert, toToneNumber, toToneMark } from "@taigikeyboard/taigi-cli";
 convert("tshiu-a", "tl", "poj");       // "chhiu-a"
 convert("chhiu-a", "poj", "tl");       // "tshiu-a"
 convert("tshiu7 a2", "tl", "zhuyin");  // TPS output
+convert("tâi-gí", "tl", "braille");    // "⠙⠜⠆⠛⠊⠂"
+convert("⠙⠜⠆⠛⠊⠂", "braille", "tl"); // "tâi-gí"
 
 toToneNumber("Gâu-tsá");               // "Gau5-tsa2"
 toToneMark("tshiu7-a2");               // "tshiú-á"
