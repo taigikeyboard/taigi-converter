@@ -33,13 +33,13 @@
   ],
   "author": "siansiansu",
   "license": "MIT",
-  "homepage": "https://github.com/siansiansu/taigi-converter#readme",
+  "homepage": "https://github.com/taigikeyboard/taigi-converter#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/siansiansu/taigi-converter.git"
+    "url": "git+https://github.com/taigikeyboard/taigi-converter.git"
   },
   "bugs": {
-    "url": "https://github.com/siansiansu/taigi-converter/issues"
+    "url": "https://github.com/taigikeyboard/taigi-converter/issues"
   },
   "publishConfig": {
     "access": "public"
