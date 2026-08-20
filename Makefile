@@ -8,7 +8,7 @@ help:
 	@echo "  clean       Remove generated docs directory"
 
 test:
-	node --test tests/
+	node --test tests/*.js
 
 build-dict:
 	node scripts/build-dictionary.js
