@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { convert } from "../src/converter.js";
-import { toBraille } from "../src/braille.js";
+import { toBraille, fromBraille, isBraille } from "../src/braille.js";
 
 function tl(text) {
   return convert(text, "tl", "braille");
@@ -97,6 +97,52 @@ test("uppercase input converts case-insensitively", () => {
 test("poj source", () => {
   assert.equal(convert("goá sī tâi-oân-lâng", "poj", "braille"), "⠛⠺⠂ ⠎⠊⠒ ⠙⠜⠆⠻⠆⠇⠭⠆");
   assert.equal(convert("chhân êng", "poj", "braille"), "⠉⠧⠆ ⠵⠆");
+});
+
+test("fromBraille decodes syllables", () => {
+  assert.equal(fromBraille("⠓⠧⠤⠡⠊⠆ ⠍⠒⠠⠟⠽⠤ ⠇⠕⠔⠞⠪⠆ ⠝⠺⠒"), "han1-tsi5 m7-kiann1 loh8-thoo5 nua7");
+  assert.equal(fromBraille("⠛⠺⠂ ⠎⠊⠒ ⠙⠜⠆⠻⠆⠇⠭⠆"), "gua2 si7 tai5-uan5-lang5");
+});
+
+test("braille source conversion", () => {
+  assert.equal(convert("⠓⠧⠤⠡⠊⠆ ⠍⠒⠠⠟⠽⠤ ⠇⠕⠔⠞⠪⠆ ⠝⠺⠒", "braille", "tl"), "han-tsî m̄-kiann lo̍h-thôo nuā".normalize("NFC"));
+  assert.equal(convert("⠓⠧⠤⠡⠊⠆", "braille", "poj"), "han-chî".normalize("NFC"));
+  assert.equal(convert("⠛⠺⠂", "braille", "zhuyin"), "ㆣㄨㄚˋ");
+});
+
+test("fromBraille entering tones and nasals", () => {
+  assert.equal(fromBraille("⠁⠢ ⠩⠢ ⠧⠢ ⠭⠢ ⠵⠢ ⠯⠢ ⠌⠢ ⠼⠢"), "ah4 ap4 at4 ak4 ik4 ok4 ut4 op4");
+  assert.equal(fromBraille("⠠⠎⠁⠤ ⠠⠎⠁⠢ ⠠⠙⠽⠤"), "sann1 sannh4 tiann1");
+  assert.equal(fromBraille("⠍⠒ ⠬⠆ ⠓⠬⠤ ⠝⠬⠒ ⠍⠢"), "m7 ng5 hng1 nng7 mh4");
+});
+
+test("fromBraille khin and punctuation", () => {
+  assert.equal(fromBraille("⠡⠽⠔⠤⠤⠁⠢"), "tsiah8--ah4");
+  assert.equal(fromBraille("⠅⠖⠤⠤⠤⠅⠊⠄"), "khin1--khi3");
+  assert.equal(fromBraille("⠓⠕⠂⠂⠀ ⠛⠺⠂ ⠎⠊⠒⠲⠀"), "ho2, gua2 si7.");
+  assert.equal(fromBraille("⠧⠂⠠⠡⠺⠂⠦⠀"), "an2-tsuann2?");
+  assert.equal(fromBraille("⠦⠇⠊⠤⠴⠀"), '"li1"');
+});
+
+test("braille roundtrip", () => {
+  const samples = [
+    "guá sī tâi-uân-lâng",
+    "hōo-suànn-tsat",
+    "tsia̍h--ah",
+    "kin-á-ji̍t thinn-khì tsin hó.",
+    "tsi̍t nn̄g sann sì gōo la̍k tshit peh káu tsa̍p",
+    "m̄ n̂g hng"
+  ];
+  for (const s of samples) {
+    const braille = convert(s, "tl", "braille");
+    assert.equal(convert(braille, "braille", "tl"), s.normalize("NFC"), s);
+  }
+});
+
+test("isBraille", () => {
+  assert.equal(isBraille("⠓⠧⠤"), true);
+  assert.equal(isBraille("guá"), false);
+  assert.equal(isBraille("⠀"), false);
 });
 
 test("zhuyin source", () => {

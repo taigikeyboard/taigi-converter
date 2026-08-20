@@ -2,10 +2,10 @@ import { isStopTone, normalizeToTl, parseSyllable, splitInitialFinal, stripToneM
 import { toTl } from "./tl.js";
 import { toPoj } from "./poj.js";
 import { fromZhuyin, toZhuyin } from "./zhuyin.js";
-import { toBraille } from "./braille.js";
+import { fromBraille, toBraille } from "./braille.js";
 import { segmentWords } from "./segmenter.js";
 
-const SYSTEMS = new Set(["tl", "poj", "zhuyin"]);
+const SYSTEMS = new Set(["tl", "poj", "zhuyin", "braille"]);
 const TARGETS = new Set(["tl", "poj", "zhuyin", "braille"]);
 
 const SYLLABLE_RE = /([\p{Script=Latin}\p{M}ⁿᴺ]+[0-9]?)/gu;
@@ -18,6 +18,12 @@ export function convert(text, source, target) {
     const numbered = segmentWords(fromZhuyin(text));
     if (target === "braille") return toBraille(numbered);
     return toToneMark(numbered, target);
+  }
+
+  if (source === "braille") {
+    const numbered = fromBraille(text);
+    if (target === "tl") return toToneMark(numbered, "tl");
+    return convert(numbered, "tl", target);
   }
 
   if (target === "braille") {
