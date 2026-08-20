@@ -53,6 +53,50 @@ describe("tai CLI", () => {
     });
   });
 
+  describe("braille conversion", () => {
+    it("tl -> braille via argv", () => {
+      const { stdout, code } = run(["tl", "braille", "tâi-gí"]);
+      strictEqual(code, 0);
+      strictEqual(stdout, "⠙⠜⠆⠛⠊⠂\n");
+    });
+
+    it("braille -> tl via argv", () => {
+      const { stdout, code } = run(["braille", "tl", "⠙⠜⠆⠛⠊⠂"]);
+      strictEqual(code, 0);
+      strictEqual(stdout, "tâi-gí\n");
+    });
+
+    it("braille -> poj via flags", () => {
+      const { stdout, code } = run(["-f", "braille", "-t", "poj", "⠏⠑⠔⠫⠒⠚⠊⠒"]);
+      strictEqual(code, 0);
+      strictEqual(stdout, "pe̍h-ōe-jī\n");
+    });
+
+    it("braille -> tps via argv", () => {
+      const { stdout, code } = run(["braille", "tps", "⠙⠜⠆⠛⠊⠂"]);
+      strictEqual(code, 0);
+      match(stdout, /ㄉㄞ/);
+    });
+
+    it("accepts br alias", () => {
+      const { stdout, code } = run(["tl", "br", "tâi-gí"]);
+      strictEqual(code, 0);
+      strictEqual(stdout, "⠙⠜⠆⠛⠊⠂\n");
+    });
+
+    it("reads braille from stdin", () => {
+      const { stdout, code } = run(["-f", "braille", "-t", "tl"], { input: "⠙⠜⠆⠛⠊⠂" });
+      strictEqual(code, 0);
+      strictEqual(stdout, "tâi-gí");
+    });
+
+    it("rejects --tone with braille source", () => {
+      const { stderr, code } = run(["-f", "braille", "-t", "braille", "--tone", "mark", "⠙⠜⠆"]);
+      strictEqual(code, 2);
+      match(stderr, /does not apply to braille/);
+    });
+  });
+
   describe("stdin", () => {
     it("reads stdin when no positional args", () => {
       const { stdout, code } = run(["-f", "tl", "-t", "poj"], { input: "peh8" });

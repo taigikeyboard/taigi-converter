@@ -37,7 +37,7 @@ tai <from> <to|mark|number|num> [--ascii] [text...]
 tai -f <system> -t <system> [--tone mark|number|num] [--ascii] [text...]
 ```
 
-Systems: `tl`, `poj`, `tps`. The CLI also accepts common aliases like `tailo`, `tai-lo`, and `zhuyin`.
+Systems: `tl`, `poj`, `tps`, `braille`. The CLI also accepts common aliases like `tailo`, `tai-lo`, `zhuyin`, and `br`.
 Input comes from arguments, or from stdin if none given.
 
 ```bash
@@ -46,6 +46,8 @@ echo "tai5-gi2" | tai tl tps                # ㄉㄞˊ ㆣㄧˋ
 tai tl num "pe̍h-uē-jī"                     # peh8-ue7-ji7
 tai poj mark "peh8-oe7-ji7"                 # pe̍h-ōe-jī
 tai -f poj -t poj --tone number --ascii "o͘-á"
+tai tl braille "tâi-gí"                     # ⠙⠜⠆⠛⠊⠂
+tai braille tl "⠙⠜⠆⠛⠊⠂"                # tâi-gí
 ```
 
 Use `mark`, `number`, or `num` as the second argument to convert tone format inside the same romanization system.

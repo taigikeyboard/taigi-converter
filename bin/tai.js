@@ -17,6 +17,8 @@ const SYSTEM_ALIASES = {
   bpmf: "zhuyin",
   bopomofo: "zhuyin",
   fangyin: "zhuyin",
+  braille: "braille",
+  br: "braille",
 };
 const TONE_ALIASES = {
   mark: "mark",
@@ -33,6 +35,7 @@ Systems:
   tl          Tai-lo (aliases: tailo, tai-lo)
   poj         Pe-oh-e-ji (aliases: pehoeji, peh-oe-ji)
   tps         Taiwanese Phonetic Symbols (aliases: zhuyin, bpmf, bopomofo, fangyin)
+  braille     Taiwanese braille (alias: br)
 
 Options:
   -f, --from <system>    Source system
@@ -55,6 +58,8 @@ Examples:
   tai tl num "pe̍h-uē-jī"
   tai poj mark "peh8-oe7-ji7"
   tai -f tl -t poj --ascii "o͘-á"
+  tai tl braille "tâi-gí"
+  tai braille tl "⠙⠜⠆⠛⠊⠂"
 `;
 
 function fail(msg, code = 2) {
@@ -66,7 +71,7 @@ function fail(msg, code = 2) {
 function resolveSystem(name, flag) {
   if (!name) fail(`missing --${flag}`);
   const key = name.toLowerCase();
-  if (!(key in SYSTEM_ALIASES)) fail(`unknown system '${name}' for --${flag} (expected tl, poj, tps, or zhuyin)`);
+  if (!(key in SYSTEM_ALIASES)) fail(`unknown system '${name}' for --${flag} (expected tl, poj, tps, zhuyin, or braille)`);
   return SYSTEM_ALIASES[key];
 }
 
@@ -176,6 +181,9 @@ async function main() {
   }
   if (tone && from === "zhuyin") {
     fail(`--tone does not apply to tps`);
+  }
+  if (tone && from === "braille") {
+    fail(`--tone does not apply to braille`);
   }
 
   let input;
