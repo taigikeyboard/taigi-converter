@@ -46,6 +46,14 @@ export const POJ_FINAL_SUBS = [
   ["ua", "oa"], ["ue", "oe"], ["ing", "eng"], ["ik", "ek"]
 ];
 
+export const POJ_TRAD_FINAL_SUBS = [
+  ["nn", "\u207f"], ["oo", "o\u0358"],
+  ["ir", "u\u0324"], ["er", "o\u0324"], ["ee", "e\u0358"],
+  ["ua", "oa"], ["ue", "oe"], ["ing", "eng"], ["ik", "ek"]
+];
+
+export const POJ_TRAD_CH_FINAL_INITIALS = new Set(["i", "e"]);
+
 export const TL_FINAL_SUBS = [
   ["\u207f", "nn"], ["o\u0358", "oo"],
   ["oa", "ua"], ["oe", "ue"], ["eng", "ing"], ["ek", "ik"]

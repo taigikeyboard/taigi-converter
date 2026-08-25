@@ -1,17 +1,43 @@
-import { POJ_FINAL_SUBS, POJ_INITIAL_FROM_TL, TONE_NUM_TO_COMBINING } from "./tables.js";
+import {
+  POJ_FINAL_SUBS, POJ_INITIAL_FROM_TL, POJ_TRAD_CH_FINAL_INITIALS,
+  POJ_TRAD_FINAL_SUBS, TONE_NUM_TO_COMBINING
+} from "./tables.js";
+
+export function toPojTrad(initial, final, tone) {
+  const pojFinal = applyFinalSubs(final, POJ_TRAD_FINAL_SUBS);
+  const pojInitial = tradInitial(initial, pojFinal);
+  let mark = TONE_NUM_TO_COMBINING[tone] || "";
+  if (tone === "9") mark = final === "a" ? "̃" : "̆";
+  const markedFinal = placePojToneMarkTrad(pojFinal, mark);
+  return (pojInitial + markedFinal).normalize("NFC");
+}
+
+function tradInitial(initial, pojFinal) {
+  if (initial === "tsh") return "chh";
+  if (initial === "ts") return POJ_TRAD_CH_FINAL_INITIALS.has(pojFinal[0]) ? "ch" : "ts";
+  return initial;
+}
+
+function placePojToneMarkTrad(final, mark) {
+  if (!mark) return final;
+  if (final.includes("ṳ")) return final.replace("ṳ", "ṳ" + mark);
+  if (final.includes("o̤")) return final.replace("o̤", "o̤" + mark);
+  if (final.includes("e͘")) return final.replace("e͘", "e" + mark + "͘");
+  return placePojToneMark(final, mark);
+}
 
 export function toPoj(initial, final, tone) {
   const pojInitial = POJ_INITIAL_FROM_TL[initial] || initial;
-  const pojFinal = tlFinalToPoj(final);
+  const pojFinal = applyFinalSubs(final, POJ_FINAL_SUBS);
   let mark = TONE_NUM_TO_COMBINING[tone] || "";
   if (tone === "9") mark = "\u0306";
   const markedFinal = placePojToneMark(pojFinal, mark);
   return (pojInitial + markedFinal).normalize("NFC");
 }
 
-function tlFinalToPoj(final) {
+function applyFinalSubs(final, subs) {
   let result = final;
-  for (const [tlPart, pojPart] of POJ_FINAL_SUBS) {
+  for (const [tlPart, pojPart] of subs) {
     result = result.replaceAll(tlPart, pojPart);
   }
   return result;

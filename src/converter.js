@@ -1,12 +1,16 @@
 import { isStopTone, normalizeToTl, parseSyllable, splitInitialFinal, stripToneMark } from "./phonetics.js";
 import { toTl } from "./tl.js";
-import { toPoj } from "./poj.js";
+import { toPoj, toPojTrad } from "./poj.js";
 import { fromZhuyin, toZhuyin } from "./zhuyin.js";
 import { fromBraille, toBraille } from "./braille.js";
 import { segmentWords } from "./segmenter.js";
 
 const SYSTEMS = new Set(["tl", "poj", "zhuyin", "braille"]);
-const TARGETS = new Set(["tl", "poj", "zhuyin", "braille"]);
+const TARGETS = new Set(["tl", "poj", "poj-trad", "zhuyin", "braille"]);
+
+function pojAssembler(target) {
+  return target === "poj-trad" ? toPojTrad : toPoj;
+}
 
 const SYLLABLE_RE = /([\p{Script=Latin}\p{M}ⁿᴺ]+[0-9]?)/gu;
 
@@ -49,7 +53,7 @@ export function convert(text, source, target) {
     }).join("\n");
   }
 
-  const assembler = target === "tl" ? toTl : toPoj;
+  const assembler = target === "tl" ? toTl : pojAssembler(target);
   return text.replace(SYLLABLE_RE, (match) => {
     try {
       const [initial, final, tone] = parseSyllable(match);
@@ -111,7 +115,7 @@ export function toToneNumberAscii(text) {
 }
 
 export function toToneMark(text, system = "tl") {
-  const assembler = system === "tl" ? toTl : toPoj;
+  const assembler = system === "tl" ? toTl : pojAssembler(system);
   return text.replace(SYLLABLE_RE, (match) => {
     if (!/[0-9]$/.test(match)) return match;
     try {

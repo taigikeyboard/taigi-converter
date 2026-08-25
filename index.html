@@ -79,7 +79,7 @@
 
     .card {
       width: 100%;
-      max-width: 680px;
+      max-width: 760px;
       background: #fff;
       border-radius: 18px;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.03);
@@ -126,7 +126,7 @@
 
     .result-label {
       flex-shrink: 0;
-      width: 11rem;
+      width: 13rem;
       white-space: nowrap;
       font-size: 15px;
       font-weight: 400;
@@ -253,6 +253,14 @@
         <div class="result-value placeholder" id="out-poj-num-non-ascii">見本: ho͘7-soaⁿ3-chat4</div>
       </div>
       <div class="result-row">
+        <div class="result-label">白話字 (傳統版)</div>
+        <div class="result-value placeholder" id="out-poj-trad">見本: hō͘-sòaⁿ-tsat</div>
+      </div>
+      <div class="result-row">
+        <div class="result-label">白話字聲調數字 (ASCII, 傳統版)</div>
+        <div class="result-value placeholder" id="out-poj-num-ou">見本: hou7-soann3-tsat4</div>
+      </div>
+      <div class="result-row">
         <div class="result-label">方音符號</div>
         <div class="result-value placeholder" id="out-tps">見本: ㄏㆦ˫ ㄙㄨㆩ˪ ㄗㄚㆵ</div>
       </div>
@@ -264,7 +272,7 @@
   </div>
   <ol class="notes">
     <li>台羅正式版、傳統版差佇 oo → o͘, nn → ⁿ 轉換。</li>
-    <li>白話字聲調數字 (ASCII) 是採用 ASCII 標準化，o͘ , ⁿ 轉成 oo, nn。</li>
+    <li>白話字聲調數字 (ASCII) 是採用 ASCII 標準化，o͘ , ⁿ 轉成 oo, nn；(ASCII, ou) 版本 o͘ 改轉寫做 ou。</li>
     <li>台羅轉換參考<a href="https://language.moe.gov.tw/uploads/files/17579930721182.pdf">教育部拼音手冊</a>。</li>
     <li>台語點字參考<a href="https://zh.wikipedia.org/zh-hant/%E5%8F%B0%E8%AA%9E%E9%BB%9E%E5%AD%97">維基百科</a>佮<a
         href="https://class.kh.edu.tw/19061/bulletin/msg_view/836">臺語點字對照表</a>。</li>
@@ -288,6 +296,8 @@
       poj: document.getElementById("out-poj"),
       pojNum: document.getElementById("out-poj-num"),
       pojNumNonAscii: document.getElementById("out-poj-num-non-ascii"),
+      pojTrad: document.getElementById("out-poj-trad"),
+      pojNumOu: document.getElementById("out-poj-num-ou"),
       tps: document.getElementById("out-tps"),
       braille: document.getElementById("out-braille"),
     };
@@ -300,6 +310,8 @@
       poj: "見本: la̍k-goe̍h-tang",
       pojNum: "見本: lak8-goeh8-tang1",
       pojNumNonAscii: "見本: lak8-goe͘h8-tang1",
+      pojTrad: "見本: la̍k-goe̍h-tang",
+      pojNumOu: "見本: lak8-goeh8-tang1",
       tps: "見本: ㄌㄚㆻ̇ ㆣㄨㆤㆷ̇ ㄉㄤ",
       braille: "見本: ⠇⠭⠔⠛⠫⠔⠙⠭⠤",
     };
@@ -335,6 +347,9 @@
       let pojMarks = "";
       try { pojMarks = toToneMark(numbered, "poj"); } catch { }
 
+      let pojTrad = "";
+      try { pojTrad = toToneMark(numbered, "poj-trad"); } catch { }
+
       let tlNum = "";
       try { tlNum = toToneNumber(tlMarks); } catch { }
 
@@ -343,6 +358,20 @@
 
       let pojNum = "";
       try { pojNum = pojNumRaw.replace(/\u207f/g, "nn").replace(/o\u0358/g, "oo"); } catch { }
+
+      let pojTradNumRaw = "";
+      try { pojTradNumRaw = toToneNumber(pojTrad); } catch { }
+
+      let pojNumOu = "";
+      try {
+        pojNumOu = pojTradNumRaw
+          .normalize("NFD")
+          .replace(/\u207f/g, "nn")
+          .replace(/e\u0358/g, "ee")
+          .replace(/o\u0358/g, "ou")
+          .replace(/u\u0324/g, "ir")
+          .replace(/o\u0324/g, "er");
+      } catch { }
 
       let tps = "";
       try { tps = convert(tlMarks, "tl", "zhuyin"); } catch { }
@@ -357,7 +386,9 @@
       setResult("tlTrad", tlTrad);
       setResult("tlNum", tlNum);
       setResult("poj", pojMarks);
+      setResult("pojTrad", pojTrad);
       setResult("pojNum", pojNum);
+      setResult("pojNumOu", pojNumOu);
       setResult("pojNumNonAscii", pojNumRaw);
       setResult("tps", tps);
       setResult("braille", braille);

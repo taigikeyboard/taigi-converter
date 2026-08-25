@@ -250,6 +250,87 @@ describe("tone mark placement keeps er/ir digraph intact (ere, ereh, irinn final
   }
 });
 
+describe("traditional POJ (poj-trad): ir/er/ee vowels", () => {
+  const cases = [
+    ["hir",
+      "hir hír hìr hir hîr hǐr hīr hi̍r hi̋r",
+      "hṳ hṳ́ hṳ̀ hṳ hṳ̂ hṳ̌ hṳ̄ hṳ̍ hṳ̆"],
+    ["ter",
+      "ter tér tèr ter têr těr tēr te̍r te̋r",
+      "to̤ tó̤ tò̤ to̤ tô̤ tǒ̤ tō̤ to̤̍ tŏ̤"],
+    ["kee",
+      "kee kée kèe kee kêe kěe kēe ke̍e ke̋e",
+      "ke͘ ké͘ kè͘ ke͘ kê͘ kě͘ kē͘ ke̍͘ kĕ͘"],
+    ["pirinn",
+      "pirinn pirínn pirìnn pirinn pirînn pirǐnn pirīnn piri̍nn piri̋nn",
+      "pṳiⁿ pṳ́iⁿ pṳ̀iⁿ pṳiⁿ pṳ̂iⁿ pṳ̌iⁿ pṳ̄iⁿ pṳ̍iⁿ pṳ̆iⁿ"],
+    ["tere",
+      "tere teré terè tere terê terě terē tere̍ tere̋",
+      "to̤e tó̤e tò̤e to̤e tô̤e tǒ̤e tō̤e to̤̍e tŏ̤e"],
+  ];
+  for (const [syllable, marked, trad] of cases) {
+    it(`${syllable} tones 1-9`, () => {
+      const numbered = Array.from({ length: 9 }, (_, i) => syllable + (i + 1)).join(" ");
+      strictEqual(toToneMark(numbered, "tl"), marked);
+      strictEqual(convert(marked, "tl", "poj-trad"), trad);
+    });
+  }
+
+  it("light tone (9) on bare a uses tilde, not breve", () => {
+    strictEqual(convert("a̋", "tl", "poj-trad"), "ã");
+  });
+
+  it("light tone (9) elsewhere still uses breve", () => {
+    strictEqual(convert("hi̋r", "tl", "poj-trad"), "hṳ̆");
+  });
+});
+
+describe("traditional POJ (poj-trad): tone-number round trip for unmarked tone 1/4", () => {
+  // Regression: toPojTrad's final NFC normalize composes u+diaeresis-below into
+  // the single precomposed U+1E73, but o/e+diaeresis-below/dot-above-right have
+  // no precomposed form and stay decomposed. normalizeToTl must reverse both
+  // shapes so tone 1/4 (which carry no visible mark) can still be inferred.
+  it("tone 1 (unmarked) on ir vowel infers correct digit", () => {
+    strictEqual(toToneNumber(toToneMark("hir1", "poj-trad")), "hṳ1");
+  });
+  it("tone 4 (unmarked, stop) on ir vowel infers correct digit", () => {
+    strictEqual(toToneNumber(toToneMark("irk4", "poj-trad")), "ṳk4");
+  });
+  it("tone 4 (unmarked, stop) on er vowel infers correct digit", () => {
+    strictEqual(toToneNumber(toToneMark("erh4", "poj-trad")), "o̤h4");
+  });
+  it("tone 4 (unmarked, stop) on ee vowel infers correct digit", () => {
+    strictEqual(toToneNumber(toToneMark("eeh4", "poj-trad")), "e͘h4");
+  });
+});
+
+describe("traditional POJ (poj-trad): ts/ch initial split (per Barclay's Amoy dictionary)", () => {
+  // Unaspirated ts splits by the following vowel: a/o/u -> ts, i/e -> ch.
+  it("ts before a stays ts", () => strictEqual(convert("tsa", "tl", "poj-trad"), "tsa"));
+  it("ts before u stays ts", () => strictEqual(convert("tsu", "tl", "poj-trad"), "tsu"));
+  it("ts before o stays ts", () => strictEqual(convert("tso", "tl", "poj-trad"), "tso"));
+  it("ts before i becomes ch", () => strictEqual(convert("tsi", "tl", "poj-trad"), "chi"));
+  it("ts before e becomes ch", () => strictEqual(convert("tse", "tl", "poj-trad"), "che"));
+  it("ts before nasal-only final (ng) stays ts", () => strictEqual(convert("tsng", "tl", "poj-trad"), "tsng"));
+  it("ts before ir vowel (spelled u) stays ts", () => strictEqual(convert("hir", "tl", "poj-trad"), "hṳ"));
+  it("ts before er vowel (spelled o) stays ts, via tser", () => strictEqual(convert("tser", "tl", "poj-trad"), "tso̤"));
+
+  // Aspirated tsh is always chh, regardless of the following vowel - no split.
+  it("tsh before a becomes chh", () => strictEqual(convert("tsha", "tl", "poj-trad"), "chha"));
+  it("tsh before e becomes chh", () => strictEqual(convert("tshe", "tl", "poj-trad"), "chhe"));
+  it("tsh before i becomes chh", () => strictEqual(convert("tshi", "tl", "poj-trad"), "chhi"));
+  it("tsh before o becomes chh", () => strictEqual(convert("tsho", "tl", "poj-trad"), "chho"));
+  it("tsh before u becomes chh", () => strictEqual(convert("tshu", "tl", "poj-trad"), "chhu"));
+  it("tsh before nasal-only final (ng) becomes chh", () => strictEqual(convert("tshng", "tl", "poj-trad"), "chhng"));
+  it("tsh before ir vowel (spelled u) becomes chh", () => strictEqual(convert("tshir", "tl", "poj-trad"), "chhṳ"));
+  it("tsh before er vowel (spelled o) becomes chh, via tsher", () => strictEqual(convert("tsher", "tl", "poj-trad"), "chho̤"));
+
+  it("other initials pass through unchanged", () => strictEqual(convert("kam", "tl", "poj-trad"), "kam"));
+  it("preserves title case", () => strictEqual(convert("Tsia", "tl", "poj-trad"), "Chia"));
+  it("preserves upper case", () => strictEqual(convert("TSIA", "tl", "poj-trad"), "CHIA"));
+  it("preserves title case for aspirated non-split", () => strictEqual(convert("Tsho", "tl", "poj-trad"), "Chho"));
+});
+
 describe("toToneNumber", () => {
   it("basic", () => strictEqual(toToneNumber("k\u00e1"), "ka2"));
   it("tone 5", () => strictEqual(toToneNumber("k\u00e2"), "ka5"));
