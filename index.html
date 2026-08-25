@@ -272,7 +272,7 @@
   </div>
   <ol class="notes">
     <li>台羅正式版、傳統版差佇 oo → o͘, nn → ⁿ 轉換。</li>
-    <li>白話字聲調數字 (ASCII) 是採用 ASCII 標準化，o͘ , ⁿ 轉成 oo, nn；(ASCII, ou) 版本 o͘ 改轉寫做 ou。</li>
+    <li>白話字聲調數字 (ASCII) 是採用 ASCII 標準化，o͘ , ⁿ 轉成 oo, nn。</li>
     <li>台羅轉換參考<a href="https://language.moe.gov.tw/uploads/files/17579930721182.pdf">教育部拼音手冊</a>。</li>
     <li>台語點字參考<a href="https://zh.wikipedia.org/zh-hant/%E5%8F%B0%E8%AA%9E%E9%BB%9E%E5%AD%97">維基百科</a>佮<a
         href="https://class.kh.edu.tw/19061/bulletin/msg_view/836">臺語點字對照表</a>。</li>
@@ -338,7 +338,7 @@
       try {
         numbered = isZhuyin(text) ? segmentWords(fromZhuyin(text))
           : isBraille(text) ? fromBraille(text)
-          : toToneNumber(text);
+            : toToneNumber(text);
       } catch { }
 
       let tlMarks = "";
