@@ -47,5 +47,8 @@
   "scripts": {
     "test": "node --test tests/*.js",
     "build:dict": "node scripts/build-dictionary.js"
+  },
+  "dependencies": {
+    "@kemdict/kesi": "^0.3.1"
   }
 }
