@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import { strictEqual, ok } from "node:assert";
-import { toPoj } from "../src/poj.js";
+import { toPoj, toPojTrad } from "../src/poj.js";
 
 describe("toPoj", () => {
   it("ts becomes ch", () => strictEqual(toPoj("ts", "u", "2"), "ch\u00fa"));
@@ -48,6 +48,32 @@ describe("toPoj", () => {
 
   it("triphthong iau mark on a", () => ok(toPoj("", "iau", "5").includes("\u00e2")));
   it("diphthong ai mark on first", () => strictEqual(toPoj("k", "ai", "2"), "k\u00e1i"));
+
+  // `au` keeps the mark on `a` even when a coda closes the syllable. The
+  // closed-syllable "mark the second vowel" rule is a POJ orthographic
+  // exception owned by `oa` / `oe` alone (oa\u030dh \u6d3b, cho\u00e2n \u5168, koe\u030dh);
+  // applying it to `au` produced la\u030fuh-style output (reported 2026-08-28).
+  it("auh keeps mark on a", () => strictEqual(toPoj("l", "auh", "8"), "la\u030duh"));
+  it("auh keeps mark on a for unchecked tones", () =>
+    strictEqual(toPoj("l", "auh", "2"), "l\u00e1uh"));
+  it("aunnh keeps mark on a", () =>
+    strictEqual(toPoj("l", "aunnh", "8"), "la\u030du\u207fh"));
+  it("au open keeps mark on a", () => strictEqual(toPoj("l", "au", "8"), "la\u030du"));
+  it("traditional POJ auh keeps mark on a", () =>
+    strictEqual(toPojTrad("l", "auh", "8"), "la\u030duh"));
+
+  it("oa open keeps mark on o", () => strictEqual(toPoj("g", "ua", "2"), "g\u00f3a"));
+  it("oa nasalized keeps mark on o", () =>
+    strictEqual(toPoj("p", "uann", "3"), "p\u00f2a\u207f"));
+  it("oa closed moves mark to a", () =>
+    strictEqual(toPoj("ts", "uah", "8"), "choa\u030dh"));
+  it("oan closed moves mark to a", () =>
+    strictEqual(toPoj("ts", "uan", "5"), "cho\u00e2n"));
+  it("oa nasalized checked moves mark to a", () =>
+    strictEqual(toPoj("k", "uannh", "8"), "koa\u030d\u207fh"));
+  it("oe closed moves mark to e", () =>
+    strictEqual(toPoj("k", "ueh", "8"), "koe\u030dh"));
+  it("ui keeps mark on u", () => strictEqual(toPoj("ts", "ui", "2"), "ch\u00fai"));
 
   it("diphthong ia mark on second", () => {
     ok(toPoj("k", "ia", "2").includes("\u00e1"));
