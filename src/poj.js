@@ -62,25 +62,18 @@ function placePojToneMark(final, mark) {
     const start = vowelsMatch.index;
     const first = final[start];
     const second = final[start + 1];
+    const isOaOePair = first === "o" && (second === "a" || second === "e");
+    const nasalWithoutHPrefix =
+      (final.endsWith("\u207f") || final.endsWith("\u1d3a"))
+      && !final.endsWith("h\u207f") && !final.endsWith("h\u1d3a");
     let target;
     if (first === "i") {
       target = second;
-    } else if (second === "i") {
-      target = first;
-    } else if (final.length === 2) {
-      target = first;
-    } else if (
-      (final.endsWith("\u207f") || final.endsWith("\u1d3a"))
-      && !final.endsWith("h\u207f") && !final.endsWith("h\u1d3a")
-    ) {
-      target = first;
-    } else {
+    } else if (isOaOePair && !nasalWithoutHPrefix) {
       const suffix = final.slice(start + 2);
-      if (suffix && "nmgptkh\u207f\u1d3a".includes(suffix[0])) {
-        target = second;
-      } else {
-        target = first;
-      }
+      target = suffix && "nmgptkh\u207f\u1d3a".includes(suffix[0]) ? second : first;
+    } else {
+      target = first;
     }
     return final.replace(target, target + mark);
   }
