@@ -39,8 +39,6 @@ export function convert(text, source, target) {
     return numbered.split("\n").map(line => {
       const parts = [];
       line.split(" ").forEach(word => {
-        // every syllable after `--`, up to the end of the word, is neutral-tone:
-        // toZhuyin turns its `--` prefix into the leading ·
         word.split("--").forEach((segment, k) => {
           segment.split("-").forEach(t => {
             if (!t) return;

@@ -162,7 +162,7 @@ describe("convert API", () => {
   it("neutral tone twice in a word", () => strictEqual(convert("t\u0144g--l\u00e2i--ah", "tl", "zhuyin"), "\u3109\u31ad\u02cb \u00b7\u310c\u311e\u02ca \u00b7\u311a\u31b7"));
   it("neutral tone word-initial", () => strictEqual(convert("--\u00ea", "tl", "zhuyin"), "\u00b7\u31a4\u02ca"));
   it("neutral tone resets at a space", () => strictEqual(convert("\u0101u--ji\u030dt k\u00e1", "tl", "zhuyin"), "\u3120\u02eb \u00b7\u31a2\u3127\u31b5\u0307 \u310d\u311a\u02cb"));
-  it("neutral tone before punctuation adds no lone dot", () => strictEqual(convert("tsia\u030dh--ah.", "tl", "zhuyin"), "\u3110\u3127\u311a\u31b7\u0307 \u00b7\u311a\u31b7 \u3002"));
+  it("neutral tone: trailing punctuation token gets no dot", () => strictEqual(convert("tsia\u030dh--ah.", "tl", "zhuyin"), "\u3110\u3127\u311a\u31b7\u0307 \u00b7\u311a\u31b7 \u3002"));
   // known limitation: zhuyin \u2192 tl keeps the \u00b7 instead of restoring `--`
   it("neutral dot survives zhuyin to tl", () => strictEqual(convert("\u310a\u3127\u31a9 \u00b7\u3109\u3127\u311b\u31b7\u0307", "zhuyin", "tl"), "thiann\u00b7tio\u030dh"));
   it("\u76ae phu\u00ea", () => strictEqual(convert("phu\u00ea", "tl", "zhuyin"), "\u3106\u3128\u31a4\u02ca"));
