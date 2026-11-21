@@ -39,13 +39,14 @@ export function convert(text, source, target) {
     return numbered.split("\n").map(line => {
       const parts = [];
       line.split(" ").forEach(word => {
-        const prefix = word.startsWith("--") ? "--" : "";
-        const bare = prefix ? word.slice(2) : word;
-        bare.split("-").forEach((t, i) => {
-          if (!t) return;
-          const tps = toZhuyin((i === 0 ? prefix : "") + t).trimEnd();
-          tps.split(/([。，？．「」]+)/).forEach(s => {
-            if (s) parts.push(s);
+        word.split("--").forEach((segment, k) => {
+          segment.split("-").forEach(t => {
+            if (!t) return;
+            const neutral = k > 0 && /\p{L}/u.test(t);
+            const tps = toZhuyin((neutral ? "--" : "") + t).trimEnd();
+            tps.split(/([。，？．「」]+)/).forEach(s => {
+              if (s) parts.push(s);
+            });
           });
         });
       });
