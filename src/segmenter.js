@@ -57,10 +57,15 @@ function segmentLine(line) {
       }
       return tok.value;
     }
-    const syllables = tok.value.split("-").filter(Boolean);
-    if (syllables.length <= 1) return tok.value;
-    return segmentRun(syllables);
+    const [stressed, ...neutral] = tok.value.split("--");
+    return segmentStressed(stressed) + neutral.map(syllable => "--" + syllable).join("");
   }).join("");
+}
+
+function segmentStressed(run) {
+  const syllables = run.split("-").filter(Boolean);
+  if (syllables.length <= 1) return run;
+  return segmentRun(syllables);
 }
 
 export function segmentWords(text) {

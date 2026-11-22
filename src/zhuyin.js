@@ -29,10 +29,10 @@ REV_VOWELS.push(["\u3125", "ng"]);
 REV_VOWELS.sort((a, b) => b[0].length - a[0].length);
 const REV_TONES = buildReverseTones();
 
-const REV_PUNCT = [
+const REV_PUNCT = new Map([
   ["\u3002", "."], ["\u300c", '"'], ["\u300d", '"'],
   ["\uff0c", ","], ["\uff1f", "?"], ["\uff0e", "\u00b7"]
-];
+]);
 
 const ZHUYIN_RE = /[\u3100-\u312F\u31A0-\u31BF]/;
 
@@ -41,18 +41,30 @@ export function isZhuyin(text) {
 }
 
 export function fromZhuyin(text) {
-  let input = text;
-  for (const [tps, ascii] of REV_PUNCT) {
-    input = input.replaceAll(tps, ascii);
-  }
-
-  let remaining = input;
+  let remaining = text;
   const parts = [];
   let initial = "";
   let vowel = "";
+  let neutral = false;
+
+  const pushSyllable = (syl) => {
+    parts.push({ type: "syllable", value: syl, neutral });
+    neutral = false;
+  };
 
   while (remaining.length > 0) {
     let matched = false;
+
+    if (remaining[0] === "·" || (remaining[0] === "˙" && !initial && !vowel)) {
+      if (initial || vowel) {
+        pushSyllable(initial === "m" && vowel === "m" ? "m" : initial + vowel);
+        initial = "";
+        vowel = "";
+      }
+      neutral = true;
+      remaining = remaining.slice(1);
+      continue;
+    }
 
     for (const [tps, tl] of REV_TONES) {
       if (remaining.startsWith(tps)) {
@@ -61,7 +73,7 @@ export function fromZhuyin(text) {
           let syl = initial + vowel;
           if (initial === "m" && vowel === "m") syl = "m";
           if (syl.includes("oo") && /^[ptk][48]$/.test(tl)) syl = syl.replace("oo", "o");
-          parts.push({ type: "syllable", value: syl + tl });
+          pushSyllable(syl + tl);
         }
         initial = "";
         vowel = "";
@@ -96,26 +108,31 @@ export function fromZhuyin(text) {
     if (initial || vowel) {
       let syl = initial + vowel;
       if (initial === "m" && vowel === "m") syl = "m";
-      parts.push({ type: "syllable", value: syl });
+      pushSyllable(syl);
       initial = "";
       vowel = "";
     }
-    parts.push({ type: "other", value: remaining[0] });
+    parts.push({ type: "other", value: REV_PUNCT.get(remaining[0]) ?? remaining[0] });
+    neutral = false;
     remaining = remaining.slice(1);
   }
 
   if (initial || vowel) {
     let syl = initial + vowel;
     if (initial === "m" && vowel === "m") syl = "m";
-    parts.push({ type: "syllable", value: syl });
+    pushSyllable(syl);
   }
 
   let result = "";
   for (let i = 0; i < parts.length; i++) {
-    if (i > 0 && parts[i].type === "syllable" && parts[i - 1].type === "syllable") {
-      result += "-";
+    const part = parts[i];
+    const previous = parts[i - 1];
+    if (part.type === "syllable" && part.neutral) {
+      result += "--";
+    } else if (part.type === "syllable" && previous?.type === "syllable") {
+      result += previous.neutral ? " " : "-";
     }
-    result += parts[i].value;
+    result += part.value;
   }
   return result;
 }
@@ -201,7 +218,7 @@ export function toZhuyin(text, { encodeSafe = false } = {}) {
     if (!matched) break;
   }
 
-  result = result.replaceAll("--", "\u00b7");
+  result = result.replaceAll("--", "\u02d9");
 
   return result;
 }

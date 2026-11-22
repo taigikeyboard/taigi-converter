@@ -155,16 +155,35 @@ describe("convert API", () => {
       "\u3110\u3127\u3125\u02ea \u310c\u3124\u02ca \u31a4\u02ca \u3127\u02ea \u310d\u3127\u3122\u02ea \u3127 \u3127\u31b5 \u310e\u311e\u02ea \u310f\u3128\u3122\u02cb \u3109\u3128\u3127\u02ea \u3002");
   });
   it("\u908a pinn", () => strictEqual(convert("pinn", "tl", "zhuyin"), "\u3105\u31aa"));
-  // neutral tone: \u00b7 (U+00B7) before every syllable after `--` up to the word end,
-  // original tone mark kept
-  it("neutral tone mid-word", () => strictEqual(convert("thiann--tio\u030dh", "tl", "zhuyin"), "\u310a\u3127\u31a9 \u00b7\u3109\u3127\u311b\u31b7\u0307"));
-  it("neutral tone to word end", () => strictEqual(convert("ts\u00e1u--tshut-kh\u00ec", "tl", "zhuyin"), "\u3117\u3120\u02cb \u00b7\u3118\u3128\u31b5 \u00b7\u310e\u3127\u02ea"));
-  it("neutral tone twice in a word", () => strictEqual(convert("t\u0144g--l\u00e2i--ah", "tl", "zhuyin"), "\u3109\u31ad\u02cb \u00b7\u310c\u311e\u02ca \u00b7\u311a\u31b7"));
-  it("neutral tone word-initial", () => strictEqual(convert("--\u00ea", "tl", "zhuyin"), "\u00b7\u31a4\u02ca"));
-  it("neutral tone resets at a space", () => strictEqual(convert("\u0101u--ji\u030dt k\u00e1", "tl", "zhuyin"), "\u3120\u02eb \u00b7\u31a2\u3127\u31b5\u0307 \u310d\u311a\u02cb"));
-  it("neutral tone: trailing punctuation token gets no dot", () => strictEqual(convert("tsia\u030dh--ah.", "tl", "zhuyin"), "\u3110\u3127\u311a\u31b7\u0307 \u00b7\u311a\u31b7 \u3002"));
-  // known limitation: zhuyin \u2192 tl keeps the \u00b7 instead of restoring `--`
-  it("neutral dot survives zhuyin to tl", () => strictEqual(convert("\u310a\u3127\u31a9 \u00b7\u3109\u3127\u311b\u31b7\u0307", "zhuyin", "tl"), "thiann\u00b7tio\u030dh"));
+  // neutral tone: ˙ (U+02D9) before every syllable after `--` up to the word end, original
+  // tone mark kept (zi-hi.com TPS article: the neutral mark is U+02D9, written before the syllable)
+  it("neutral tone mid-word", () => strictEqual(convert("thiann--tio\u030dh", "tl", "zhuyin"), "\u310a\u3127\u31a9 \u02d9\u3109\u3127\u311b\u31b7\u0307"));
+  it("neutral tone to word end", () => strictEqual(convert("ts\u00e1u--tshut-kh\u00ec", "tl", "zhuyin"), "\u3117\u3120\u02cb \u02d9\u3118\u3128\u31b5 \u02d9\u310e\u3127\u02ea"));
+  it("neutral tone twice in a word", () => strictEqual(convert("t\u0144g--l\u00e2i--ah", "tl", "zhuyin"), "\u3109\u31ad\u02cb \u02d9\u310c\u311e\u02ca \u02d9\u311a\u31b7"));
+  it("neutral tone word-initial", () => strictEqual(convert("--\u00ea", "tl", "zhuyin"), "\u02d9\u31a4\u02ca"));
+  it("neutral tone resets at a space", () => strictEqual(convert("\u0101u--ji\u030dt k\u00e1", "tl", "zhuyin"), "\u3120\u02eb \u02d9\u31a2\u3127\u31b5\u0307 \u310d\u311a\u02cb"));
+  it("neutral tone: trailing punctuation token gets no dot", () => strictEqual(convert("tsia\u030dh--ah.", "tl", "zhuyin"), "\u3110\u3127\u311a\u31b7\u0307 \u02d9\u311a\u31b7 \u3002"));
+  // zhuyin \u2192 tl: every neutral syllable gets its own `--` (TPS has no hyphen rule to tell
+  // `-\u00e1` from `--ah`); a \u02d9 right after a syllable is tone 8, before one it is neutral
+  it("zhuyin neutral dot to tl --", () => strictEqual(convert("\u310a\u3127\u31a9 \u02d9\u3109\u3127\u311b\u31b7\u0307", "zhuyin", "tl"), "thiann--tio\u030dh"));
+  it("zhuyin U+00B7 neutral dot to tl --", () => strictEqual(convert("\u310a\u3127\u31a9 \u00b7\u3109\u3127\u311b\u31b7\u0307", "zhuyin", "tl"), "thiann--tio\u030dh"));
+  it("zhuyin U+00B7 neutral dot without a space", () => strictEqual(convert("\u310a\u3127\u31a9\u00b7\u3109\u3127\u311b\u31b7\u0307", "zhuyin", "tl"), "thiann--tio\u030dh"));
+  it("zhuyin neutral run marks every syllable", () => strictEqual(convert("\u3110\u3127\u311a\u31b7\u0307 \u02d9\u3110\u3127\u31b5\u0307 \u02d9\u3109\u3127\u31b0\u02cb \u02d9\u311a\u02cb", "zhuyin", "tl"), "tsia\u030dh--tsi\u030dt--ti\u00e1m--\u00e1"));
+  it("zhuyin neutral run ends its word", () => strictEqual(convert("\u310e\u3128\u31a9\u02ea \u02d9\u3109\u3127\u311b\u31b7\u0307 \u310c\u3124\u02ca", "zhuyin", "tl"), "khu\u00e0nn--tio\u030dh l\u00e2ng"));
+  it("zhuyin neutral after a dictionary word", () => strictEqual(convert("\u310f\u311b\u02cb \u3119\u31a4\u02ea \u02d9\u311a\u31b7\u3002", "zhuyin", "tl"), "H\u00f3-s\u00e8--ah."));
+  it("zhuyin word-initial neutral", () => strictEqual(convert("\u02d9\u31a4\u02ca", "zhuyin", "tl"), "--\u00ea"));
+  it("zhuyin tone-8 dot then neutral dot", () => strictEqual(convert("\u3109\u3127\u311b\u31b7\u02d9 \u02d9\u311a\u31b7", "zhuyin", "tl"), "tio\u030dh--ah"));
+  it("zhuyin tone-4 coda then neutral dot", () => strictEqual(convert("\u3109\u3127\u311b\u31b7 \u02d9\u311a\u31b7", "zhuyin", "tl"), "tioh--ah"));
+  it("zhuyin neutral and tone 8 on one syllable (encode-safe)", () => strictEqual(convert("\u310a\u3127\u31a9 \u02d9\u3109\u3127\u311b\u31b7\u02d9", "zhuyin", "tl"), "thiann--tio\u030dh"));
+  it("zhuyin unspaced dot after an open syllable stays tone 8", () => strictEqual(convert("\u310a\u3127\u31a9\u02d9\u3109\u3127\u311b\u31b7\u0307", "zhuyin", "tl"), "thia\u030dnn-tio\u030dh"));
+  it("zhuyin full-width \uff0e stays punctuation", () => strictEqual(convert("\u310a\u3127\u31a9 \uff0e\u3109\u3127\u311b\u31b7\u0307", "zhuyin", "tl"), "thiann\u00b7tio\u030dh"));
+  it("zhuyin neutral to poj", () => strictEqual(convert("\u310a\u3127\u31a9 \u02d9\u3109\u3127\u311b\u31b7\u0307", "zhuyin", "poj"), "thia\u207f--tio\u030dh"));
+  it("zhuyin neutral to braille matches tl", () => strictEqual(convert("\u310a\u3127\u31a9 \u02d9\u3109\u3127\u311b\u31b7\u0307", "zhuyin", "braille"), convert("thiann--tio\u030dh", "tl", "braille")));
+  it("neutral round trip tl \u2192 zhuyin \u2192 tl", () => {
+    for (const tl of ["thiann--tio\u030dh", "ts\u00e1u--tshut--kh\u00ec", "--\u00ea", "t\u0144g--l\u00e2i--ah"]) {
+      strictEqual(convert(convert(tl, "tl", "zhuyin"), "zhuyin", "tl"), tl);
+    }
+  });
   it("\u76ae phu\u00ea", () => strictEqual(convert("phu\u00ea", "tl", "zhuyin"), "\u3106\u3128\u31a4\u02ca"));
   it("\u6728 ba\u030dk", () => strictEqual(convert("ba\u030dk", "tl", "zhuyin"), "\u31a0\u311a\u31bb\u0307"));
   it("\u8349 tsh\u00e1u", () => strictEqual(convert("tsh\u00e1u", "tl", "zhuyin"), "\u3118\u3120\u02cb"));
@@ -174,7 +193,7 @@ describe("convert API", () => {
   it("\u886b sann", () => strictEqual(convert("sann", "tl", "zhuyin"), "\u3119\u31a9"));
   it("\u9ec3 n\u0302g", () => strictEqual(convert("n\u0302g", "tl", "zhuyin"), "\u31ad\u02ca"));
   it("er\u011b tone 6", () => strictEqual(convert("er\u011b", "tl", "zhuyin"), "\u311c\u31a4\u02c7"));
-  it("--ah neutral tone", () => strictEqual(convert("--ah", "tl", "zhuyin"), "\u00b7\u311a\u31b7"));
+  it("--ah neutral tone", () => strictEqual(convert("--ah", "tl", "zhuyin"), "\u02d9\u311a\u31b7"));
   it("tl to poj ing to eng", () => ok(convert("p\u00eeng", "tl", "poj").includes("\u00eang")));
   it("preserves non syllable text", () => ok(convert("hello-world", "tl", "poj").includes("-")));
   it("preserves case title", () => ok(convert("T\u00e2i-g\u00ed", "tl", "poj")[0] === "T"));
