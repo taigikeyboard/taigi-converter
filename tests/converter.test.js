@@ -179,6 +179,17 @@ describe("convert API", () => {
   it("zhuyin full-width \uff0e stays punctuation", () => strictEqual(convert("\u310a\u3127\u31a9 \uff0e\u3109\u3127\u311b\u31b7\u0307", "zhuyin", "tl"), "thiann\u00b7tio\u030dh"));
   it("zhuyin neutral to poj", () => strictEqual(convert("\u310a\u3127\u31a9 \u02d9\u3109\u3127\u311b\u31b7\u0307", "zhuyin", "poj"), "thia\u207f--tio\u030dh"));
   it("zhuyin neutral to braille matches tl", () => strictEqual(convert("\u310a\u3127\u31a9 \u02d9\u3109\u3127\u311b\u31b7\u0307", "zhuyin", "braille"), convert("thiann--tio\u030dh", "tl", "braille")));
+  it("zhuyin U+00B7 not before a syllable stays literal", () => {
+    strictEqual(convert("\u746a\u9e97\u00b7\u5c45\u79ae \u311a\u02cb", "zhuyin", "tl"), "\u746a\u9e97\u00b7\u5c45\u79ae\u00e1");
+    strictEqual(convert("A\u00b7B \u311a\u02cb", "zhuyin", "tl"), "A\u00b7B\u00e1");
+    strictEqual(convert("\u311a\u02cb\u00b7", "zhuyin", "tl"), "\u00e1\u00b7");
+    strictEqual(convert("\u311a \u00b7\u3002\u311a", "zhuyin", "tl"), "A\u00b7. a");
+  });
+  it("zhuyin neutral mark resets at a line break", () => strictEqual(convert("\u311a\u02cb \u02d9\n\u3105\u311a\u02cb", "zhuyin", "tl"), "\u00e1\np\u00e1"));
+  it("zhuyin neutral mark carries across a space", () => {
+    strictEqual(convert("\u02d9 \u311a", "zhuyin", "tl"), "--a");
+    strictEqual(convert("\u311a\u02cb \u00b7 \u311a\u02cb", "zhuyin", "tl"), "\u00e1--\u00e1");
+  });
   it("neutral round trip tl \u2192 zhuyin \u2192 tl", () => {
     for (const tl of ["thiann--tio\u030dh", "ts\u00e1u--tshut--kh\u00ec", "--\u00ea", "t\u0144g--l\u00e2i--ah"]) {
       strictEqual(convert(convert(tl, "tl", "zhuyin"), "zhuyin", "tl"), tl);

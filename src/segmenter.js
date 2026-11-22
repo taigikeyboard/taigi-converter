@@ -57,8 +57,7 @@ function segmentLine(line) {
       }
       return tok.value;
     }
-    const [stressed, ...neutral] = tok.value.split("--");
-    return segmentStressed(stressed) + neutral.map(syllable => "--" + syllable).join("");
+    return tok.value.split("--").map((part, i) => i === 0 ? segmentStressed(part) : part).join("--");
   }).join("");
 }
 

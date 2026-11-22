@@ -29,10 +29,7 @@ REV_VOWELS.push(["\u3125", "ng"]);
 REV_VOWELS.sort((a, b) => b[0].length - a[0].length);
 const REV_TONES = buildReverseTones();
 
-const REV_PUNCT = new Map([
-  ["\u3002", "."], ["\u300c", '"'], ["\u300d", '"'],
-  ["\uff0c", ","], ["\uff1f", "?"], ["\uff0e", "\u00b7"]
-]);
+const REV_PUNCT = new Map(PUNCTUATION_PAIRS.map(([tps, ascii]) => [tps, ascii.trim()]));
 
 const ZHUYIN_RE = /[\u3100-\u312F\u31A0-\u31BF]/;
 
@@ -45,23 +42,29 @@ export function fromZhuyin(text) {
   const parts = [];
   let initial = "";
   let vowel = "";
-  let neutral = false;
+  let neutralMark = null;
 
-  const pushSyllable = (syl) => {
-    parts.push({ type: "syllable", value: syl, neutral });
-    neutral = false;
+  const flushSyllable = (tone = "") => {
+    if (!initial && !vowel) return;
+    let syl = initial === "m" && vowel === "m" ? "m" : initial + vowel;
+    if (syl.includes("oo") && /^[ptk][48]$/.test(tone)) syl = syl.replace("oo", "o");
+    parts.push({ type: "syllable", value: syl + tone, neutral: neutralMark !== null });
+    neutralMark = null;
+    initial = "";
+    vowel = "";
+  };
+  const dropNeutralMark = () => {
+    if (neutralMark === "\u00b7") parts.push({ type: "other", value: neutralMark });
+    neutralMark = null;
   };
 
   while (remaining.length > 0) {
     let matched = false;
 
-    if (remaining[0] === "·" || (remaining[0] === "˙" && !initial && !vowel)) {
-      if (initial || vowel) {
-        pushSyllable(initial === "m" && vowel === "m" ? "m" : initial + vowel);
-        initial = "";
-        vowel = "";
-      }
-      neutral = true;
+    if (remaining[0] === "\u00b7" || (remaining[0] === "\u02d9" && !initial && !vowel)) {
+      flushSyllable();
+      dropNeutralMark();
+      neutralMark = remaining[0];
       remaining = remaining.slice(1);
       continue;
     }
@@ -69,14 +72,7 @@ export function fromZhuyin(text) {
     for (const [tps, tl] of REV_TONES) {
       if (remaining.startsWith(tps)) {
         remaining = remaining.slice(tps.length);
-        if (initial || vowel) {
-          let syl = initial + vowel;
-          if (initial === "m" && vowel === "m") syl = "m";
-          if (syl.includes("oo") && /^[ptk][48]$/.test(tl)) syl = syl.replace("oo", "o");
-          pushSyllable(syl + tl);
-        }
-        initial = "";
-        vowel = "";
+        flushSyllable(tl);
         matched = true;
         break;
       }
@@ -105,23 +101,14 @@ export function fromZhuyin(text) {
     }
     if (matched) continue;
 
-    if (initial || vowel) {
-      let syl = initial + vowel;
-      if (initial === "m" && vowel === "m") syl = "m";
-      pushSyllable(syl);
-      initial = "";
-      vowel = "";
-    }
+    flushSyllable();
+    dropNeutralMark();
     parts.push({ type: "other", value: REV_PUNCT.get(remaining[0]) ?? remaining[0] });
-    neutral = false;
     remaining = remaining.slice(1);
   }
 
-  if (initial || vowel) {
-    let syl = initial + vowel;
-    if (initial === "m" && vowel === "m") syl = "m";
-    pushSyllable(syl);
-  }
+  flushSyllable();
+  dropNeutralMark();
 
   let result = "";
   for (let i = 0; i < parts.length; i++) {

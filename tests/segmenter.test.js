@@ -54,4 +54,9 @@ describe("segmentWords", () => {
   it("passes through non-syllable text", () => {
     assert.equal(segmentWords("hello world"), "hello world");
   });
+
+  it("keeps neutral-tone -- after the dictionary-segmented head", () => {
+    assert.equal(segmentWords("ho2-se3--ah4"), "ho2-se3--ah4");
+    assert.equal(segmentWords("--e5"), "--e5");
+  });
 });
