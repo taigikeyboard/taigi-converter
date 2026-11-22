@@ -97,7 +97,7 @@ const cases = [
   ["永 íng", "\u00edng", "\u3127\u3125\u02cb"],
   ["兵 ping", "ping", "\u3105\u3127\u3125"],
   ["erě tone 6", "er\u011b", "\u311c\u31a4\u02c7"],
-  ["--ah neutral tone", "--ah", "\u00b7\u311a\u31b7"],
+  ["--ah neutral tone", "--ah", "\u02d9\u311a\u31b7"],
 ];
 
 describe("vocabulary zhuyin conversion", () => {
